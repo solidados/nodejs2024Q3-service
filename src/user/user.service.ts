@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { DatabaseService } from '../database/database.service';
+import { User } from './entities/user.entitiy';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto): string {
-    return `Create new User`;
+  constructor(private readonly databaseService: DatabaseService) {
+    this.databaseService = databaseService;
   }
 
-  findAll(): string {
-    return `Get All Users`;
+  create(createUserDto: CreateUserDto): User {
+    return this.databaseService.addUser(
+      new User(createUserDto.login, createUserDto.password),
+    );
   }
 
-  findOne(id: number): string {
-    return `Get User with id: ${id}`;
+  findAll(): User[] {
+    return this.databaseService.getUsers();
   }
 
-  update(id: number, updateUserDto: UpdateUserDto): string {
-    return `Update User with id: ${id}`;
+  findOne(id: string): User {
+    return this.databaseService.getUserById(id);
   }
 
-  delete(id: number): string {
-    return `Delete User with id: ${id}`;
+  update(id: string, updateUserDto: UpdateUserDto): User {
+    return this.databaseService.updateUser(
+      new User(updateUserDto.login, updateUserDto.password),
+    );
+  }
+
+  delete(id: string): string {
+    return this.databaseService.deleteUser(id);
   }
 }
