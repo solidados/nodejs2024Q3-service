@@ -48,14 +48,14 @@ export class UserService {
     }
 
     user.version += 0.1;
-    user.updatedAt = Date.now();
     user.password = updateUserDto.newPassword;
+    user.updatedAt = Date.now();
     this.databaseService.updateUser(user);
 
     return plainToClass(User, user);
   }
 
-  delete(id: string) {
+  delete(id: string): void {
     const user: User = this.databaseService.getUserById(id);
 
     if (!user) {
