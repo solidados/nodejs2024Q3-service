@@ -51,10 +51,10 @@ export class TrackService {
     return plainToClass(Track, track);
   }
 
-  delete(id: string) {
+  delete(id: string): void {
     const track: Track = this.databaseService.getTrackById(id);
     if (!track) throw new NotFoundException({ message: 'Track not found' });
 
-    return this.databaseService.deleteTrack(id);
+    this.databaseService.deleteTrack(id);
   }
 }

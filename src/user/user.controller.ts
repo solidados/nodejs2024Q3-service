@@ -13,7 +13,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { User } from './entities/user.entitiy';
+import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {

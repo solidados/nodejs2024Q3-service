@@ -7,7 +7,7 @@ import { plainToClass } from 'class-transformer';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { DatabaseService } from '../database/database.service';
-import { User } from './entities/user.entitiy';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -55,6 +55,6 @@ export class UserService {
 
     if (!user) throw new NotFoundException({ message: 'User not found' });
 
-    return this.databaseService.deleteUser(id);
+    this.databaseService.deleteUser(id);
   }
 }

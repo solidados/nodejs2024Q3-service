@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../user/entities/user.entitiy';
+import { User } from '../user/entities/user.entity';
 import { Track } from '../track/entities/track.entity';
 
 @Injectable()
