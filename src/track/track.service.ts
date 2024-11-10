@@ -11,12 +11,12 @@ export class TrackService {
     this.databaseService = databaseService;
   }
 
-  create(createUserDto: CreateTrackDto): Track {
+  create(createTrackDto: CreateTrackDto): Track {
     const track: Track = new Track(
-      createUserDto.name,
-      createUserDto.artistId,
-      createUserDto.albumId,
-      createUserDto.duration,
+      createTrackDto.name,
+      createTrackDto.artistId,
+      createTrackDto.albumId,
+      createTrackDto.duration,
     );
     this.databaseService.addTrack(track);
 
@@ -37,14 +37,14 @@ export class TrackService {
     return plainToClass(Track, track);
   }
 
-  update(id: string, updateUserDto: UpdateTrackDto): Track {
+  update(id: string, updateTrackDto: UpdateTrackDto): Track {
     const track: Track = this.databaseService.getTrackById(id);
     if (!track) throw new NotFoundException({ message: 'Track not found' });
 
-    track.name = updateUserDto.name;
-    if (updateUserDto.artistId) track.artistId = updateUserDto.artistId;
-    if (updateUserDto.albumId) track.albumId = updateUserDto.albumId;
-    track.duration = updateUserDto.duration;
+    track.name = updateTrackDto.name;
+    if (updateTrackDto.artistId) track.artistId = updateTrackDto.artistId;
+    if (updateTrackDto.albumId) track.albumId = updateTrackDto.albumId;
+    track.duration = updateTrackDto.duration;
 
     this.databaseService.updateTrack(track);
 
