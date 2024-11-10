@@ -3,6 +3,7 @@ import { User } from '../user/entities/user.entity';
 import { Track } from '../track/entities/track.entity';
 import { Artist } from '../artist/entities/artist.entity';
 import { Album } from '../album/entities/album.entity';
+import { Favorites } from '../favorites/entities/favorites.entity';
 
 @Injectable()
 export class DatabaseService {
@@ -10,6 +11,11 @@ export class DatabaseService {
   private readonly tracks: Track[] = [];
   private readonly artists: Artist[] = [];
   private readonly albums: Album[] = [];
+  private readonly favorites: Favorites = {
+    artists: [],
+    albums: [],
+    tracks: [],
+  };
 
   /** - `Add` block */
   addUser(user: User): void {
@@ -28,6 +34,20 @@ export class DatabaseService {
     this.albums.push(album);
   }
 
+  addFavorite(id: string, type: 'artists' | 'albums' | 'tracks') {
+    switch (type) {
+      case 'artists':
+        this.favorites.artists.push(id);
+        break;
+      case 'albums':
+        this.favorites.albums.push(id);
+        break;
+      case 'tracks':
+        this.favorites.tracks.push(id);
+        break;
+    }
+  }
+
   /** - `Get All` block */
   getUsers(): User[] {
     return this.users;
@@ -44,6 +64,18 @@ export class DatabaseService {
   getAlbums(): Album[] {
     return this.albums;
   }
+
+  getFavorites = () => ({
+    artists: this.artists.filter((artist: Artist) =>
+      this.favorites.artists.includes(artist.id),
+    ),
+    albums: this.albums.filter((album: Album) =>
+      this.favorites.artists.includes(album.id),
+    ),
+    tracks: this.tracks.filter((track: Track) =>
+      this.favorites.tracks.includes(track.id),
+    ),
+  });
 
   /** - `Get One by ID` block */
   getUserById(id: string): User | undefined {
@@ -143,6 +175,9 @@ export class DatabaseService {
         message: `Track with ID ${id} not found.`,
         code: 'ID_NOT_FOUND',
       });
+    this.favorites.tracks = this.favorites.tracks.filter(
+      (favTrackId): boolean => favTrackId !== id,
+    );
     this.tracks.splice(index, 1);
 
     return true;
@@ -166,6 +201,10 @@ export class DatabaseService {
       if (album.artistId === id) album.artistId = null;
     });
 
+    this.favorites.artists = this.favorites.artists.filter(
+      (favArtistId): boolean => favArtistId !== id,
+    );
+
     this.artists.splice(index, 1);
 
     return true;
@@ -185,8 +224,32 @@ export class DatabaseService {
       if (track.albumId === id) track.albumId = null;
     });
 
+    this.favorites.albums = this.favorites.albums.filter(
+      (favAlbumId): boolean => favAlbumId !== id,
+    );
+
     this.albums.splice(index, 1);
 
     return true;
+  }
+
+  deleteFavorites(id: string, type: 'artist' | 'album' | 'track') {
+    switch (type) {
+      case 'artist':
+        this.favorites.artists = this.favorites.artists.filter(
+          (favArtistId): boolean => favArtistId !== id,
+        );
+        break;
+      case 'album':
+        this.favorites.albums = this.favorites.albums.filter(
+          (favAlbumId): boolean => favAlbumId !== id,
+        );
+        break;
+      case 'track':
+        this.favorites.tracks = this.favorites.tracks.filter(
+          (favTrackId): boolean => favTrackId !== id,
+        );
+        break;
+    }
   }
 }
