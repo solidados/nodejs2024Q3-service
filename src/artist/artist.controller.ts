@@ -23,7 +23,7 @@ export class ArtistController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createArtistDto: CreateArtistDto) {
+  create(@Body() createArtistDto: CreateArtistDto): Artist {
     return this.artistService.create(createArtistDto);
   }
 
