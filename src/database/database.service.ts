@@ -171,6 +171,10 @@ export class DatabaseService {
         message: `Album with ID ${id} not found.`,
       });
 
+    this.tracks.forEach((track) => {
+      if (track.albumId === id) track.albumId = null;
+    });
+
     this.albums.splice(index, 1);
 
     return true;
