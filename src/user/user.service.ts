@@ -30,7 +30,7 @@ export class UserService {
     const user: User = this.databaseService.getUserById(id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException({ message: 'User not found' });
     }
 
     return plainToClass(User, user);
@@ -40,11 +40,11 @@ export class UserService {
     const user: User = this.databaseService.getUserById(id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException({ message: 'User not found' });
     }
 
     if (updateUserDto.oldPassword !== user.password) {
-      throw new ForbiddenException('Wrong password');
+      throw new ForbiddenException({ message: 'Wrong password' });
     }
 
     user.version += 0.1;
@@ -59,7 +59,7 @@ export class UserService {
     const user: User = this.databaseService.getUserById(id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException({ message: 'User not found' });
     }
     return this.databaseService.deleteUser(id);
   }
