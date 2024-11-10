@@ -2,14 +2,18 @@ import {
   Body,
   Get,
   Post,
-  Patch,
+  Put,
   Delete,
   Param,
   Controller,
+  ParseUUIDPipe,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { User } from './entities/user.entitiy';
 
 @Controller('user')
 export class UserController {
@@ -18,30 +22,35 @@ export class UserController {
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): string {
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() createUserDto: CreateUserDto): User {
     return this.userService.create(createUserDto);
   }
 
   @Get()
-  findAll(): string {
+  @HttpCode(HttpStatus.OK)
+  findAll(): User[] {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): string {
+  @HttpCode(HttpStatus.OK)
+  findOne(@Param('id', ParseUUIDPipe) id: string): User {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
   update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): string {
+  ): User {
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): string {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.userService.delete(id);
   }
 }

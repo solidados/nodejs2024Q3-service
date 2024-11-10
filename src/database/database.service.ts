@@ -5,9 +5,8 @@ import { User } from '../user/entities/user.entitiy';
 export class DatabaseService {
   private users: User[] = [];
 
-  addUser(user: User): User {
+  addUser(user: User) {
     this.users.push(user);
-    return user;
   }
 
   getUsers(): User[] {
@@ -15,20 +14,20 @@ export class DatabaseService {
   }
 
   getUserById(id: string): User {
-    return this.users.find((user: User): boolean => user.id === id);
+    return this.users.find((usr: User): boolean => usr.id === id);
   }
 
-  updateUser(user: User): User {
+  updateUser(user: User) {
     const index: number = this.users.findIndex(
-      (u: User): boolean => u.id === user.id,
+      (usr: User): boolean => usr.id === user.id,
     );
     this.users[index] = user;
-    return user;
   }
 
-  deleteUser(id: string): string {
-    const index: number = this.users.findIndex((u: User) => u.id === id);
+  deleteUser(id: string) {
+    const index: number = this.users.findIndex(
+      (usr: User): boolean => usr.id === id,
+    );
     this.users.splice(index, 1);
-    return id;
   }
 }
