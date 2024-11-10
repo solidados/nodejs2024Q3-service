@@ -70,6 +70,7 @@ export class DatabaseService {
     if (index === -1)
       throw new NotFoundException({
         message: `User with ID ${user.id} not found.`,
+        code: 'ID_NOT_FOUND',
       });
     this.users[index] = user;
 
@@ -83,6 +84,7 @@ export class DatabaseService {
     if (index === -1)
       throw new NotFoundException({
         message: `Track with ID ${track.id} not found.`,
+        code: 'ID_NOT_FOUND',
       });
     this.tracks[index] = track;
 
@@ -96,6 +98,7 @@ export class DatabaseService {
     if (index === -1)
       throw new NotFoundException({
         message: `Artist with ID ${artist.id} not found.`,
+        code: 'ID_NOT_FOUND',
       });
     this.artists[index] = artist;
 
@@ -109,6 +112,7 @@ export class DatabaseService {
     if (index === -1)
       throw new NotFoundException({
         message: `Album with ID ${album.id} not found.`,
+        code: 'ID_NOT_FOUND',
       });
     this.albums[index] = album;
 
@@ -121,7 +125,10 @@ export class DatabaseService {
       (usr: User): boolean => usr.id === id,
     );
     if (index === -1)
-      throw new NotFoundException({ message: `User with ID ${id} not found.` });
+      throw new NotFoundException({
+        message: `User with ID ${id} not found.`,
+        code: 'ID_NOT_FOUND',
+      });
     this.users.splice(index, 1);
 
     return true;
@@ -134,6 +141,7 @@ export class DatabaseService {
     if (index === -1)
       throw new NotFoundException({
         message: `Track with ID ${id} not found.`,
+        code: 'ID_NOT_FOUND',
       });
     this.tracks.splice(index, 1);
 
@@ -147,6 +155,7 @@ export class DatabaseService {
     if (index === -1)
       throw new NotFoundException({
         message: `Artist with ID ${id} not found.`,
+        code: 'ID_NOT_FOUND',
       });
 
     this.tracks.forEach((track: Track): void => {
@@ -169,6 +178,7 @@ export class DatabaseService {
     if (index === -1)
       throw new NotFoundException({
         message: `Album with ID ${id} not found.`,
+        code: 'ID_NOT_FOUND',
       });
 
     this.tracks.forEach((track: Track): void => {

@@ -31,7 +31,10 @@ export class TrackService {
     const track: Track = this.databaseService.getTrackById(id);
 
     if (!track) {
-      throw new NotFoundException({ message: 'Track not found' });
+      throw new NotFoundException({
+        message: 'Track not found',
+        code: 'TRACK_NOT_FOUND',
+      });
     }
 
     return plainToClass(Track, track);
@@ -39,7 +42,11 @@ export class TrackService {
 
   update(id: string, updateTrackDto: UpdateTrackDto): Track {
     const track: Track = this.databaseService.getTrackById(id);
-    if (!track) throw new NotFoundException({ message: 'Track not found' });
+    if (!track)
+      throw new NotFoundException({
+        message: 'Track not found',
+        code: 'TRACK_NOT_FOUND',
+      });
 
     track.name = updateTrackDto.name;
     if (updateTrackDto.artistId) track.artistId = updateTrackDto.artistId;
@@ -53,7 +60,11 @@ export class TrackService {
 
   delete(id: string): void {
     const track: Track = this.databaseService.getTrackById(id);
-    if (!track) throw new NotFoundException({ message: 'Track not found' });
+    if (!track)
+      throw new NotFoundException({
+        message: 'Track not found',
+        code: 'TRACK_NOT_FOUND',
+      });
 
     this.databaseService.deleteTrack(id);
   }

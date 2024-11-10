@@ -29,7 +29,11 @@ export class UserService {
   findOne(id: string): User {
     const user: User = this.databaseService.getUserById(id);
 
-    if (!user) throw new NotFoundException({ message: 'User not found' });
+    if (!user)
+      throw new NotFoundException({
+        message: 'User not found',
+        code: 'USER_NOT_FOUND',
+      });
 
     return plainToClass(User, user);
   }
@@ -37,10 +41,17 @@ export class UserService {
   update(id: string, updateUserDto: UpdateUserDto): User {
     const user: User = this.databaseService.getUserById(id);
 
-    if (!user) throw new NotFoundException({ message: 'User not found' });
+    if (!user)
+      throw new NotFoundException({
+        message: 'User not found',
+        code: 'USER_NOT_FOUND',
+      });
 
     if (updateUserDto.oldPassword !== user.password)
-      throw new ForbiddenException({ message: 'Wrong password' });
+      throw new ForbiddenException({
+        message: 'Wrong password',
+        code: 'WRONG_PASSWORD',
+      });
 
     user.version += 0.1;
     user.password = updateUserDto.newPassword;
@@ -53,7 +64,11 @@ export class UserService {
   delete(id: string): void {
     const user: User = this.databaseService.getUserById(id);
 
-    if (!user) throw new NotFoundException({ message: 'User not found' });
+    if (!user)
+      throw new NotFoundException({
+        message: 'User not found',
+        code: 'USER_NOT_FOUND',
+      });
 
     this.databaseService.deleteUser(id);
   }

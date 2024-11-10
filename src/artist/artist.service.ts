@@ -27,7 +27,11 @@ export class ArtistService {
 
   findOne(id: string): Artist {
     const artist: Artist = this.databaseService.getArtistById(id);
-    if (!artist) throw new NotFoundException('Artist not found');
+    if (!artist)
+      throw new NotFoundException({
+        message: 'Artist not found',
+        code: 'ARTIST_NOT_FOUND',
+      });
 
     return plainToClass(Artist, artist);
   }
@@ -35,7 +39,11 @@ export class ArtistService {
   update(id: string, updateArtistDto: UpdateArtistDto): Artist {
     const artist: Artist = this.databaseService.getArtistById(id);
 
-    if (!artist) throw new NotFoundException('Artist not found');
+    if (!artist)
+      throw new NotFoundException({
+        message: 'Artist not found',
+        code: 'ARTIST_NOT_FOUND',
+      });
 
     if (updateArtistDto.name !== undefined) {
       artist.name = updateArtistDto.name;
@@ -51,7 +59,11 @@ export class ArtistService {
 
   delete(id: string): void {
     const artist: Artist = this.databaseService.getArtistById(id);
-    if (!artist) throw new NotFoundException('Artist not found');
+    if (!artist)
+      throw new NotFoundException({
+        message: 'Artist not found',
+        code: 'ARTIST_NOT_FOUND',
+      });
 
     this.databaseService.deleteArtist(id);
   }
