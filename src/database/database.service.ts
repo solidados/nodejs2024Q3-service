@@ -171,7 +171,7 @@ export class DatabaseService {
         message: `Album with ID ${id} not found.`,
       });
 
-    this.tracks.forEach((track) => {
+    this.tracks.forEach((track: Track): void => {
       if (track.albumId === id) track.albumId = null;
     });
 
