@@ -29,7 +29,7 @@ export class UserService {
   findOne(id: string): User {
     const user: User = this.databaseService.getUserById(id);
 
-    if (user) {
+    if (!user) {
       throw new NotFoundException('User not found');
     }
 
