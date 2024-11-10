@@ -233,23 +233,34 @@ export class DatabaseService {
     return true;
   }
 
-  deleteFavorites(id: string, type: 'artist' | 'album' | 'track') {
+  deleteFavorites(id: string, type: 'artists' | 'albums' | 'tracks') {
     switch (type) {
-      case 'artist':
+      case 'artists':
         this.favorites.artists = this.favorites.artists.filter(
           (favArtistId): boolean => favArtistId !== id,
         );
         break;
-      case 'album':
+      case 'albums':
         this.favorites.albums = this.favorites.albums.filter(
           (favAlbumId): boolean => favAlbumId !== id,
         );
         break;
-      case 'track':
+      case 'tracks':
         this.favorites.tracks = this.favorites.tracks.filter(
           (favTrackId): boolean => favTrackId !== id,
         );
         break;
+    }
+  }
+
+  isFavoriteExist(id: string, type: 'artists' | 'albums' | 'tracks'): boolean {
+    switch (type) {
+      case 'artists':
+        return this.artists.some((artist: Artist): boolean => artist.id === id);
+      case 'albums':
+        return this.albums.some((album: Album): boolean => album.id === id);
+      case 'tracks':
+        return this.tracks.some((track: Track): boolean => track.id === id);
     }
   }
 }
