@@ -17,13 +17,11 @@ import { UpdateTrackDto } from './dto/updateTrack.dto';
 
 @Controller('track')
 export class TrackController {
-  constructor(private readonly trackService: TrackService) {
-    this.trackService = trackService;
-  }
+  constructor(private readonly trackService: TrackService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createTrackDto: CreateTrackDto): Track {
+  create(@Body() createTrackDto: CreateTrackDto) {
     return this.trackService.create(createTrackDto);
   }
 
@@ -44,7 +42,7 @@ export class TrackController {
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
-  ): Track {
+  ) {
     return this.trackService.update(id, updateTrackDto);
   }
 

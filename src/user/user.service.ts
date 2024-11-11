@@ -11,9 +11,7 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly databaseService: DatabaseService) {
-    this.databaseService = databaseService;
-  }
+  constructor(private readonly databaseService: DatabaseService) {}
 
   create(createUserDto: CreateUserDto): User {
     const user: User = new User(createUserDto.login, createUserDto.password);
@@ -53,7 +51,7 @@ export class UserService {
         code: 'WRONG_PASSWORD',
       });
 
-    user.version += 0.1;
+    user.version += 1;
     user.password = updateUserDto.newPassword;
     user.updatedAt = Date.now();
     this.databaseService.updateUser(user);
@@ -61,7 +59,7 @@ export class UserService {
     return plainToClass(User, user);
   }
 
-  delete(id: string): void {
+  delete(id: string) {
     const user: User = this.databaseService.getUserById(id);
 
     if (!user)

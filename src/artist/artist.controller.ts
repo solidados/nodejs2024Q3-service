@@ -10,16 +10,14 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { Artist } from './entities/artist.entity';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/createArtist.dto';
-import { Artist } from './entities/artist.entity';
 import { UpdateArtistDto } from './dto/updateArtist.dto';
 
 @Controller('artist')
 export class ArtistController {
-  constructor(private readonly artistService: ArtistService) {
-    this.artistService = artistService;
-  }
+  constructor(private readonly artistService: ArtistService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

@@ -7,15 +7,13 @@ import { UpdateTrackDto } from './dto/updateTrack.dto';
 
 @Injectable()
 export class TrackService {
-  constructor(private readonly databaseService: DatabaseService) {
-    this.databaseService = databaseService;
-  }
+  constructor(private readonly databaseService: DatabaseService) {}
 
   create(createTrackDto: CreateTrackDto): Track {
     const track: Track = new Track(
       createTrackDto.name,
-      createTrackDto.artistId,
-      createTrackDto.albumId,
+      createTrackDto.artistId || null,
+      createTrackDto.albumId || null,
       createTrackDto.duration,
     );
     this.databaseService.addTrack(track);
@@ -58,7 +56,7 @@ export class TrackService {
     return plainToClass(Track, track);
   }
 
-  delete(id: string): void {
+  delete(id: string) {
     const track: Track = this.databaseService.getTrackById(id);
     if (!track)
       throw new NotFoundException({

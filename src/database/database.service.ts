@@ -18,19 +18,19 @@ export class DatabaseService {
   };
 
   /** - `Add` block */
-  addUser(user: User): void {
+  addUser(user: User) {
     this.users.push(user);
   }
 
-  addTrack(track: Track): void {
+  addTrack(track: Track) {
     this.tracks.push(track);
   }
 
-  addArtist(artist: Artist): void {
+  addArtist(artist: Artist) {
     this.artists.push(artist);
   }
 
-  addAlbum(album: Album): void {
+  addAlbum(album: Album) {
     this.albums.push(album);
   }
 

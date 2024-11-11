@@ -7,9 +7,7 @@ import { UpdateArtistDto } from './dto/updateArtist.dto';
 
 @Injectable()
 export class ArtistService {
-  constructor(private readonly databaseService: DatabaseService) {
-    this.databaseService = databaseService;
-  }
+  constructor(private readonly databaseService: DatabaseService) {}
 
   create(createArtistDto: CreateArtistDto): Artist {
     const artist: Artist = new Artist(

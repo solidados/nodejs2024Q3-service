@@ -3,12 +3,11 @@ import { DatabaseService } from '../database/database.service';
 import { CreateAlbumDto } from './dto/createAlbum.dto';
 import { Album } from './entities/album.entity';
 import { UpdateAlbumDto } from './dto/updateAlbum.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class AlbumService {
-  constructor(private readonly databaseService: DatabaseService) {
-    this.databaseService = databaseService;
-  }
+  constructor(private readonly databaseService: DatabaseService) {}
 
   create(createAlbumDto: CreateAlbumDto): Album {
     const album: Album = new Album(
@@ -18,7 +17,7 @@ export class AlbumService {
     );
     this.databaseService.addAlbum(album);
 
-    return album;
+    return plainToClass(Album, album);
   }
 
   findAll(): Album[] {
@@ -34,7 +33,7 @@ export class AlbumService {
         code: 'ALBUM_NOT_FOUND',
       });
 
-    return album;
+    return plainToClass(Album, album);
   }
 
   update(id: string, updateAlbumDto: UpdateAlbumDto): Album {
@@ -57,10 +56,10 @@ export class AlbumService {
 
     this.databaseService.updateAlbum(album);
 
-    return album;
+    return plainToClass(Album, album);
   }
 
-  delete(id: string): void {
+  delete(id: string) {
     const album: Album = this.databaseService.getAlbumById(id);
     if (!album)
       throw new NotFoundException({

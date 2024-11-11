@@ -17,13 +17,11 @@ import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {
-    this.userService = userService;
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createUserDto: CreateUserDto): User {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
@@ -44,7 +42,7 @@ export class UserController {
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): User {
+  ) {
     return this.userService.update(id, updateUserDto);
   }
 

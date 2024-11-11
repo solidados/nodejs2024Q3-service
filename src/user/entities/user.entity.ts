@@ -1,16 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Exclude } from 'class-transformer';
 
-interface IUser {
-  id: string; // uuid v4
-  login: string;
-  password: string;
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
-}
-
-export class User implements IUser {
+export class User {
   id: string;
   login: string;
 
@@ -32,10 +23,10 @@ export class User implements IUser {
     this.updatedAt = timestamp;
   }
 
-  updateFields(fields: Partial<Omit<IUser, 'id' | 'createdAt'>>) {
+  /*updateFields(fields: Partial<Omit<IUser, 'id' | 'createdAt'>>) {
     if (fields.login) this.login = fields.login;
     if (fields.password) this.password = fields.password;
     this.version += 0.1;
     this.updatedAt = Date.now();
-  }
+  }*/
 }
