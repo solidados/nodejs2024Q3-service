@@ -13,9 +13,9 @@ export class Track {
     albumId: string | null,
     duration: number,
   ) {
-    /*if (duration <= 0) {
+    if (duration <= 0) {
       throw new Error('Track duration must be a positive number');
-    }*/
+    }
 
     this.id = uuidv4();
     this.name = name;
