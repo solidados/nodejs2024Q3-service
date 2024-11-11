@@ -1,26 +1,38 @@
 # Home Library Service
 
 ## Prerequisites
-
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
-## Downloading
-
+## `How to start` instructions
+### Download
+```shell
+git clone https://github.com/solidados/nodejs2024Q3-service.git
 ```
-git clone {repository URL}
+
+### Change directory
+```shell
+cd nodejs2024Q3-service
 ```
 
-## Installing NPM modules
-
+### Switch branch
+```shell
+git checkout dev
 ```
+
+### Install NPM modules
+```shell
 npm install
 ```
 
-## Running application
-
+### Create Environment
+```shell
+cp .env.example ./.env
 ```
-npm start
+
+## Running application
+```shell
+npm run start
 ```
 
 After starting the app on port (4000 as default) you can open
