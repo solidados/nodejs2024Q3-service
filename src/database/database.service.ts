@@ -95,103 +95,103 @@ export class DatabaseService {
   }
 
   /** - `Update` block */
-  updateUser(user: User): boolean {
+  updateUser(user: User) {
     const index: number = this.users.findIndex(
       (usr: User): boolean => usr.id === user.id,
     );
-    if (index === -1)
+    /*if (index === -1)
       throw new NotFoundException({
         message: `User with ID ${user.id} not found.`,
         code: 'ID_NOT_FOUND',
-      });
+      });*/
     this.users[index] = user;
 
-    return true;
+    // return true;
   }
 
-  updateTrack(track: Track): boolean {
+  updateTrack(track: Track) {
     const index: number = this.tracks.findIndex(
       (trk: Track): boolean => trk.id === track.id,
     );
-    if (index === -1)
+    /*if (index === -1)
       throw new NotFoundException({
         message: `Track with ID ${track.id} not found.`,
         code: 'ID_NOT_FOUND',
-      });
+      });*/
     this.tracks[index] = track;
 
-    return true;
+    // return true;
   }
 
-  updateArtist(artist: Artist): boolean {
+  updateArtist(artist: Artist) {
     const index: number = this.artists.findIndex(
       (art: Artist): boolean => art.id === artist.id,
     );
-    if (index === -1)
+    /* if (index === -1)
       throw new NotFoundException({
         message: `Artist with ID ${artist.id} not found.`,
         code: 'ID_NOT_FOUND',
-      });
+      });*/
     this.artists[index] = artist;
 
-    return true;
+    // return true;
   }
 
-  updateAlbum(album: Album): boolean {
+  updateAlbum(album: Album) {
     const index: number = this.albums.findIndex(
       (alb: Album): boolean => alb.id === album.id,
     );
-    if (index === -1)
+    /*if (index === -1)
       throw new NotFoundException({
         message: `Album with ID ${album.id} not found.`,
         code: 'ID_NOT_FOUND',
-      });
+      });*/
     this.albums[index] = album;
 
-    return true;
+    // return true;
   }
 
   /** - `Delete` block */
-  deleteUser(id: string): boolean {
+  deleteUser(id: string) {
     const index: number = this.users.findIndex(
       (usr: User): boolean => usr.id === id,
     );
-    if (index === -1)
+    /*if (index === -1)
       throw new NotFoundException({
         message: `User with ID ${id} not found.`,
         code: 'ID_NOT_FOUND',
-      });
+      });*/
     this.users.splice(index, 1);
 
-    return true;
+    // return true;
   }
 
-  deleteTrack(id: string): boolean {
+  deleteTrack(id: string) {
     const index: number = this.tracks.findIndex(
       (trk: Track): boolean => trk.id === id,
     );
-    if (index === -1)
+    /*if (index === -1)
       throw new NotFoundException({
         message: `Track with ID ${id} not found.`,
         code: 'ID_NOT_FOUND',
-      });
+      });*/
     this.favorites.tracks = this.favorites.tracks.filter(
       (favTrackId): boolean => favTrackId !== id,
     );
     this.tracks.splice(index, 1);
 
-    return true;
+    // return true;
   }
 
-  deleteArtist(id: string): boolean {
+  deleteArtist(id: string) {
     const index: number = this.artists.findIndex(
       (art: Artist): boolean => art.id === id,
     );
-    if (index === -1)
+    /*if (index === -1)
       throw new NotFoundException({
         message: `Artist with ID ${id} not found.`,
         code: 'ID_NOT_FOUND',
-      });
+      });*/
 
     this.tracks.forEach((track: Track): void => {
       if (track.artistId === id) track.artistId = null;
@@ -207,18 +207,18 @@ export class DatabaseService {
 
     this.artists.splice(index, 1);
 
-    return true;
+    // return true;
   }
 
-  deleteAlbum(id: string): boolean {
+  deleteAlbum(id: string) {
     const index: number = this.albums.findIndex(
       (alb: Album): boolean => alb.id === id,
     );
-    if (index === -1)
+    /*if (index === -1)
       throw new NotFoundException({
         message: `Album with ID ${id} not found.`,
         code: 'ID_NOT_FOUND',
-      });
+      });*/
 
     this.tracks.forEach((track: Track): void => {
       if (track.albumId === id) track.albumId = null;
@@ -230,7 +230,7 @@ export class DatabaseService {
 
     this.albums.splice(index, 1);
 
-    return true;
+    // return true;
   }
 
   deleteFavorites(id: string, type: 'artists' | 'albums' | 'tracks') {
