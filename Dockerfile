@@ -3,12 +3,12 @@ LABEL authors="solidados"
 
 WORKDIR /app
 
-RUN npm ci
-RUN npm cache clean --force
-RUN npm run build
-
 COPY ["package.json", "package-lock.json*", "./"]
+RUN npm ci && npm cache clean --force
+
 COPY . .
+
+RUN npm run build
 
 CMD ["npm", "run", "start:dev"]
 

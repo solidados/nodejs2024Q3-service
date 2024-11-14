@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  node:
-    container_name: node
+  home-library:
+    container_name: home-library
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,6 +11,9 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+      PORT: ${PORT}
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public"
     depends_on:
       - postgres-db
     volumes:
@@ -19,12 +22,12 @@ services:
       - home-library
 
   postgres-db:
-    container_name: postgres
+    container_name: postgres-db
     build:
-      context: ./postgres
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.postgres
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     restart: always
     env_file:
       - .env
