@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 
 export class User {
   id: string;
@@ -9,7 +9,14 @@ export class User {
   password: string;
 
   version: number;
+
+  @Transform(({ value }: { value: string | number }): number =>
+    typeof value === 'string' ? new Date(value).getTime() : value,
+  )
   createdAt: number;
+  @Transform(({ value }: { value: string | number }): number =>
+    typeof value === 'string' ? new Date(value).getTime() : value,
+  )
   updatedAt: number;
 
   constructor(login: string, password: string) {
@@ -22,11 +29,4 @@ export class User {
     this.createdAt = timestamp;
     this.updatedAt = timestamp;
   }
-
-  /*updateFields(fields: Partial<Omit<IUser, 'id' | 'createdAt'>>) {
-    if (fields.login) this.login = fields.login;
-    if (fields.password) this.password = fields.password;
-    this.version += 0.1;
-    this.updatedAt = Date.now();
-  }*/
 }
