@@ -19,8 +19,8 @@
     "noFallthroughCasesInSwitch": false
   },
   "watchOptions": {
-    "watchFile": "dynamicPriorityPooling",
-    "watchDirectory": "dynamicPriorityPooling",
+    "watchFile": "dynamicPriorityPolling",
+    "watchDirectory": "useFsEvents",
     "fallbackPolling": "dynamicPriority",
     "synchronousWatchDirectory": true,
     "excludeDirectories": ["**/node_modules", "dist"]
