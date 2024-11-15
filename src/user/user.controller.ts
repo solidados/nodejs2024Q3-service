@@ -14,80 +14,38 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { User } from './entities/user.entity';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOperation({
-    summary: 'Create User',
-    description: 'create user (following DTO should be used) CreateUserDto',
-  })
-  @ApiBody({ type: CreateUserDto })
-  @ApiResponse({
-    status: 201,
-    description:
-      'Server should answer with status code 201 and newly created record if request is valid',
-  })
-  @ApiResponse({
-    status: 400,
-    description:
-      'Server should answer with status code 400 and corresponding message if request body does not contain required fields',
-  })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
   }
 
-  @ApiOperation({ summary: 'Get all Users' })
-  @ApiResponse({
-    status: 200,
-    description:
-      'Server should answer with status code 200 and all users records',
-  })
   @Get()
-  @HttpCode(HttpStatus.OK)
-  findAll(): User[] {
+  async findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get Single User By ID' })
-  @ApiParam({ name: 'id', description: 'User ID' })
-  @ApiResponse({
-    status: 200,
-    description:
-      'Server should answer with status code 200 and and record with id === userId if it exists',
-  })
-  @ApiResponse({
-    status: 400,
-    description:
-      'Server should answer with status code 400 and corresponding message if userId is invalid (not uuid)',
-  })
-  @ApiResponse({
-    status: 404,
-    description:
-      "Server should answer with status code 404 and corresponding message if record with id === userId doesn't exist",
-  })
   @Get(':id')
-  @HttpCode(HttpStatus.OK)
-  findOne(@Param('id', ParseUUIDPipe) id: string): User {
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<User> {
     return this.userService.findOne(id);
   }
 
   @Put(':id')
-  @HttpCode(HttpStatus.OK)
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ) {
+  ): Promise<User> {
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+  async remove(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     return this.userService.delete(id);
   }
 }
