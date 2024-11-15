@@ -13,7 +13,7 @@ services:
       - .env
     environment:
       PORT: ${PORT}
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public"
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       - postgres-db
     volumes:
@@ -45,6 +45,7 @@ services:
 networks:
   home-library:
     driver: bridge
+    name: nodejs2024Q3-service-bridge
 
 volumes:
   postgres-data:

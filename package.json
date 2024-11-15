@@ -1,8 +1,8 @@
 {
   "name": "home-library",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Music home library to store personal records in good order",
+  "author": "solidados",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

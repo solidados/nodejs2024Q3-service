@@ -4,14 +4,9 @@ LABEL authors="solidados"
 WORKDIR /app
 
 COPY ["package.json", "package-lock.json*", "./"]
-COPY prisma doc ./
 
-RUN npm ci && npx prisma generate && npm cache clean --force
+RUN npm ci
 
-COPY --chown=node:node . .
+COPY . .
 
-# RUN npm run build
-
-CMD ["npm", "run", "start:dev"]
-
-# ENTRYPOINT ["top", "-b"]
+CMD ["npm", "run", "start:home-library"]
