@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateAlbumDto } from './dto/createAlbum.dto';
 import { UpdateAlbumDto } from './dto/updateAlbum.dto';
 
+import { Album as PrismaAlbum } from '@prisma/client';
 import { Album } from './entities/album.entity';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class AlbumService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
-    const album: Album = await this.prismaService.album.create({
+    const album: PrismaAlbum = await this.prismaService.album.create({
       data: {
         name: createAlbumDto.name,
         year: createAlbumDto.year,
@@ -31,12 +32,12 @@ export class AlbumService {
   }
 
   async findAll(): Promise<Album[]> {
-    const albums: Album[] = await this.prismaService.album.findMany();
-    return albums.map((album: Album) => plainToInstance(Album, album));
+    const albums: PrismaAlbum[] = await this.prismaService.album.findMany();
+    return albums.map((album: PrismaAlbum) => plainToInstance(Album, album));
   }
 
   async findOne(id: string): Promise<Album> {
-    const album: Album = await this.prismaService.album.findUnique({
+    const album: PrismaAlbum = await this.prismaService.album.findUnique({
       where: { id },
     });
 
@@ -46,25 +47,15 @@ export class AlbumService {
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
-    const album: Album = await this.prismaService.album.findUnique({
+    const album: PrismaAlbum = await this.prismaService.album.findUnique({
       where: { id },
     });
     if (!album) throw new NotFoundException(this.NotFound);
 
-    const updatedAlbum = await this.prismaService.album.update({
+    const updatedAlbum: PrismaAlbum = await this.prismaService.album.update({
       where: { id },
       data: updateAlbumDto,
     });
-
-    // if (updateAlbumDto.name !== undefined) {
-    //   album.name = updateAlbumDto.name;
-    // }
-    // if (updateAlbumDto.year !== undefined) {
-    //   album.year = updateAlbumDto.year;
-    // }
-    // if (updateAlbumDto.artistId !== undefined) {
-    //   album.artistId = updateAlbumDto.artistId;
-    // }
 
     return plainToInstance(Album, updatedAlbum);
   }

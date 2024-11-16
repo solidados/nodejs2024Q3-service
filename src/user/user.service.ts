@@ -9,6 +9,8 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 
 import { PrismaService } from '../prisma/prisma.service';
+
+import { User as PrismaUser } from '@prisma/client';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -22,7 +24,7 @@ export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user: User = await this.prismaService.user.create({
+    const user: PrismaUser = await this.prismaService.user.create({
       data: {
         login: createUserDto.login,
         password: createUserDto.password,
@@ -33,12 +35,12 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    const users: User[] = await this.prismaService.user.findMany();
-    return users.map((user: User) => plainToInstance(User, user));
+    const users: PrismaUser[] = await this.prismaService.user.findMany();
+    return users.map((user: PrismaUser) => plainToInstance(User, user));
   }
 
   async findOne(id: string): Promise<User> {
-    const user: User = await this.prismaService.user.findUnique({
+    const user: PrismaUser = await this.prismaService.user.findUnique({
       where: { id },
     });
 
@@ -49,7 +51,7 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const { oldPassword, newPassword, ...otherData } = updateUserDto;
-    const user: User = await this.prismaService.user.findUnique({
+    const user: PrismaUser = await this.prismaService.user.findUnique({
       where: { id },
     });
 
@@ -61,7 +63,7 @@ export class UserService {
         code: 'WRONG_PASSWORD',
       });
 
-    const updatedUser: User = this.prismaService.user.update({
+    const updatedUser: PrismaUser = await this.prismaService.user.update({
       where: { id },
       data: {
         ...otherData,

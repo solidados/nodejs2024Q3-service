@@ -7,7 +7,7 @@ import { CreateTrackDto } from './dto/createTrack.dto';
 import { UpdateTrackDto } from './dto/updateTrack.dto';
 
 import { Track } from './entities/track.entity';
-// import { Track as PrismaTrack } from '@prisma/client';
+import { Track as PrismaTrack } from '@prisma/client';
 
 @Injectable()
 export class TrackService {
@@ -20,7 +20,7 @@ export class TrackService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createTrackDto: CreateTrackDto): Promise<Track> {
-    const track: Track = await this.prismaService.track.create({
+    const track: PrismaTrack = await this.prismaService.track.create({
       data: {
         name: createTrackDto.name,
         artistId: createTrackDto.artistId || null,
@@ -33,12 +33,12 @@ export class TrackService {
   }
 
   async findAll(): Promise<Track[]> {
-    const tracks: Track[] = await this.prismaService.track.findMany();
-    return tracks.map((track: Track) => plainToInstance(Track, track));
+    const tracks: PrismaTrack[] = await this.prismaService.track.findMany();
+    return tracks.map((track: PrismaTrack) => plainToInstance(Track, track));
   }
 
   async findOne(id: string): Promise<Track> {
-    const track: Track = await this.prismaService.track.findUnique({
+    const track: PrismaTrack = await this.prismaService.track.findUnique({
       where: { id },
     });
 
@@ -50,19 +50,15 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto): Promise<Track> {
-    const track: Track = this.prismaService.track.findUnique({ where: { id } });
+    const track: PrismaTrack = await this.prismaService.track.findUnique({
+      where: { id },
+    });
     if (!track) throw new NotFoundException(this.NotFound);
 
-    const updatedTrack = await this.prismaService.track.update({
+    const updatedTrack: PrismaTrack = await this.prismaService.track.update({
       where: { id },
       data: updateTrackDto,
     });
-    // track.name = updateTrackDto.name;
-    // if (updateTrackDto.artistId) track.artistId = updateTrackDto.artistId;
-    // if (updateTrackDto.albumId) track.albumId = updateTrackDto.albumId;
-    // track.duration = updateTrackDto.duration;
-    //
-    // this.prismaService.updateTrack(track);
 
     return plainToInstance(Track, updatedTrack);
   }

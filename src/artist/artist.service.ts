@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateArtistDto } from './dto/createArtist.dto';
 import { UpdateArtistDto } from './dto/updateArtist.dto';
 
+import { Artist as PrismaArtist } from '@prisma/client';
 import { Artist } from './entities/artist.entity';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class ArtistService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createArtistDto: CreateArtistDto): Promise<Artist> {
-    const artist: Artist = await this.prismaService.artist.create({
+    const artist: PrismaArtist = await this.prismaService.artist.create({
       data: {
         name: createArtistDto.name,
         grammy: createArtistDto.grammy,
@@ -30,12 +31,14 @@ export class ArtistService {
   }
 
   async findAll(): Promise<Artist[]> {
-    const artists: Artist[] = await this.prismaService.artist.findMany();
-    return artists.map((artist: Artist) => plainToInstance(Artist, artist));
+    const artists: PrismaArtist[] = await this.prismaService.artist.findMany();
+    return artists.map((artist: PrismaArtist) =>
+      plainToInstance(Artist, artist),
+    );
   }
 
   async findOne(id: string): Promise<Artist> {
-    const artist: Artist = await this.prismaService.artist.findUnique({
+    const artist: PrismaArtist = await this.prismaService.artist.findUnique({
       where: { id },
     });
 
@@ -45,20 +48,13 @@ export class ArtistService {
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
-    const artist: Artist = await this.prismaService.artist.findUnique({
+    const artist: PrismaArtist = await this.prismaService.artist.findUnique({
       where: { id },
     });
 
     if (!artist) throw new NotFoundException(this.NotFound);
 
-    // if (updateArtistDto.name !== undefined) {
-    //   artist.name = updateArtistDto.name;
-    // }
-    // if (updateArtistDto.grammy !== undefined) {
-    //   artist.grammy = updateArtistDto.grammy;
-    // }
-
-    const updatedArtist: Artist = await this.prismaService.artist.update({
+    const updatedArtist: PrismaArtist = await this.prismaService.artist.update({
       where: { id },
       data: updateArtistDto,
     });

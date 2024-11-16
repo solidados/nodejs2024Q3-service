@@ -17,25 +17,25 @@ export class FavoritesController {
   @Post('/artist/:id')
   @HttpCode(HttpStatus.CREATED)
   async addArtistToFavorites(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.favoritesService.addArtistToFavorites(id);
+    return await this.favoritesService.addArtistToFavorites(id);
   }
 
   @Post('/album/:id')
   @HttpCode(HttpStatus.CREATED)
   async addAlbumToFavorites(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.favoritesService.addAlbumToFavorites(id);
+    return await this.favoritesService.addAlbumToFavorites(id);
   }
 
   @Post('/track/:id')
   @HttpCode(HttpStatus.CREATED)
   async addTrackToFavorites(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.favoritesService.addTrackToFavorites(id);
+    return await this.favoritesService.addTrackToFavorites(id);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll() {
-    return this.favoritesService.findAll();
+    return await this.favoritesService.findAll();
   }
 
   @Delete('/artist/:id')
@@ -43,18 +43,18 @@ export class FavoritesController {
   async deleteArtistFromFavorites(
     @Param('id', new ParseUUIDPipe()) id: string,
   ) {
-    return this.favoritesService.deleteArtistFromFavorites(id);
+    return await this.favoritesService.deleteArtistFromFavorites(id);
   }
 
   @Delete('/album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteAlbumFromFavorites(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.favoritesService.deleteAlbumFromFavorites(id);
+    return await this.favoritesService.deleteAlbumFromFavorites(id);
   }
 
   @Delete('/track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteTrackFromFavorites(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.favoritesService.deleteTrackFromFavorites(id);
+    return await this.favoritesService.deleteTrackFromFavorites(id);
   }
 }
