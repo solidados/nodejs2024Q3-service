@@ -5,8 +5,7 @@ export class Album {
   name: string;
   year: number;
   artistId: string | null;
-
-  // TODO: test if default `null` is Ok?
+  
   constructor(name: string, year: number, artistId: string | null = null) {
     this.id = uuidv4();
     this.name = name;
