@@ -46,7 +46,7 @@ export class AlbumService {
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
-    const album: Album = this.prismaService.album.findUnique({
+    const album: Album = await this.prismaService.album.findUnique({
       where: { id },
     });
     if (!album) throw new NotFoundException(this.NotFound);
