@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { BadRequestException } from '@nestjs/common';
 
 export class Track {
   id: string;
@@ -14,7 +15,11 @@ export class Track {
     duration: number,
   ) {
     if (duration <= 0) {
-      throw new Error('Track duration must be a positive number');
+      throw new BadRequestException({
+        status: 400,
+        message: 'Track duration must be a positive number',
+        code: 'BAD_REQUEST',
+      });
     }
 
     this.id = uuidv4();
