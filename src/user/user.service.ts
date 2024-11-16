@@ -15,7 +15,7 @@ import { User } from './entities/user.entity';
 export class UserService {
   private readonly NotFound = {
     status: 404,
-    message: 'Artist not found',
+    message: 'User not found',
     code: 'NOT_FOUND',
   };
 
