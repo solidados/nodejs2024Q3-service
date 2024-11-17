@@ -17,10 +17,10 @@ export class AlbumService {
     code: 'NOT_FOUND',
   };
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
-    const album: PrismaAlbum = await this.prismaService.album.create({
+    const album: PrismaAlbum = await this.prisma.album.create({
       data: {
         name: createAlbumDto.name,
         year: createAlbumDto.year,
@@ -32,12 +32,12 @@ export class AlbumService {
   }
 
   async findAll(): Promise<Album[]> {
-    const albums: PrismaAlbum[] = await this.prismaService.album.findMany();
+    const albums: PrismaAlbum[] = await this.prisma.album.findMany();
     return albums.map((album: PrismaAlbum) => plainToInstance(Album, album));
   }
 
   async findOne(id: string): Promise<Album> {
-    const album: PrismaAlbum = await this.prismaService.album.findUnique({
+    const album: PrismaAlbum = await this.prisma.album.findUnique({
       where: { id },
     });
 
@@ -47,12 +47,12 @@ export class AlbumService {
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
-    const album: PrismaAlbum = await this.prismaService.album.findUnique({
+    const album: PrismaAlbum = await this.prisma.album.findUnique({
       where: { id },
     });
     if (!album) throw new NotFoundException(this.NotFound);
 
-    const updatedAlbum: PrismaAlbum = await this.prismaService.album.update({
+    const updatedAlbum: PrismaAlbum = await this.prisma.album.update({
       where: { id },
       data: updateAlbumDto,
     });
@@ -62,7 +62,7 @@ export class AlbumService {
 
   async delete(id: string): Promise<void> {
     try {
-      await this.prismaService.album.delete({ where: { id } });
+      await this.prisma.album.delete({ where: { id } });
     } catch {
       throw new NotFoundException(this.NotFound);
     }
