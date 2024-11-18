@@ -6,9 +6,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateTrackDto } from './dto/createTrack.dto';
 import { UpdateTrackDto } from './dto/updateTrack.dto';
 
+// import { Track as PrismaTrack } from '@prisma/client';
 import { Track } from './entities/track.entity';
-import { Track as PrismaTrack } from '@prisma/client';
-import { Album as PrismaAlbum } from '.prisma/client';
 
 @Injectable()
 export class TrackService {
@@ -21,7 +20,7 @@ export class TrackService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createTrackDto: CreateTrackDto): Promise<Track> {
-    const track: PrismaTrack = await this.prisma.track.create({
+    const track: Track = await this.prisma.track.create({
       data: {
         name: createTrackDto.name,
         artistId: createTrackDto.artistId || null,
@@ -34,12 +33,12 @@ export class TrackService {
   }
 
   async findAll(): Promise<Track[]> {
-    const tracks: PrismaTrack[] = await this.prisma.track.findMany();
-    return tracks.map((track: PrismaTrack) => plainToInstance(Track, track));
+    const tracks: Track[] = await this.prisma.track.findMany();
+    return tracks.map((track: Track) => plainToInstance(Track, track));
   }
 
   async findOne(id: string): Promise<Track> {
-    const track: PrismaTrack = await this.prisma.track.findUnique({
+    const track: Track = await this.prisma.track.findUnique({
       where: { id },
     });
 
@@ -51,12 +50,12 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto): Promise<Track> {
-    const track: PrismaTrack = await this.prisma.track.findUnique({
+    const track: Track = await this.prisma.track.findUnique({
       where: { id },
     });
     if (!track) throw new NotFoundException(this.NotFound);
 
-    const updatedTrack: PrismaTrack = await this.prisma.track.update({
+    const updatedTrack: Track = await this.prisma.track.update({
       where: { id },
       data: updateTrackDto,
     });
@@ -65,7 +64,7 @@ export class TrackService {
   }
 
   async delete(id: string): Promise<void> {
-    const track: PrismaTrack = await this.prisma.track.findUnique({
+    const track: Track = await this.prisma.track.findUnique({
       where: { id },
     });
 
