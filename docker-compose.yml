@@ -21,6 +21,7 @@ services:
       - postgres-db
     volumes:
       - ./src:/app/src
+      - app-logs:/var/log
 
   postgres-db:
     container_name: postgres-db
@@ -52,3 +53,5 @@ networks:
 
 volumes:
   postgres-data:
+  postgres-logs:
+  app-logs:
