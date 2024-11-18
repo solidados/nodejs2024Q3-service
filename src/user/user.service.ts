@@ -50,24 +50,23 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const { oldPassword, newPassword, ...otherData } = updateUserDto;
     const user: PrismaUser = await this.prisma.user.findUnique({
       where: { id },
     });
 
     if (!user) throw new NotFoundException(this.NotFound);
 
-    if (oldPassword !== user.password)
+    if (updateUserDto.oldPassword !== user.password) {
       throw new ForbiddenException({
         message: 'Wrong password',
         code: 'WRONG_PASSWORD',
       });
+    }
 
     const updatedUser: PrismaUser = await this.prisma.user.update({
       where: { id },
       data: {
-        ...otherData,
-        password: newPassword,
+        password: updateUserDto.newPassword,
         version: { increment: 1 },
       },
     });
@@ -76,10 +75,12 @@ export class UserService {
   }
 
   async delete(id: string): Promise<void> {
-    try {
-      await this.prisma.user.delete({ where: { id } });
-    } catch {
-      throw new NotFoundException(this.NotFound);
-    }
+    const user: PrismaUser = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) throw new NotFoundException(this.NotFound);
+
+    await this.prisma.user.delete({ where: { id } });
   }
 }
