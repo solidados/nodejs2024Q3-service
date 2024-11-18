@@ -21,10 +21,10 @@ export class UserService {
     code: 'NOT_FOUND',
   };
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user: PrismaUser = await this.prismaService.user.create({
+    const user: PrismaUser = await this.prisma.user.create({
       data: {
         login: createUserDto.login,
         password: createUserDto.password,
@@ -35,12 +35,12 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    const users: PrismaUser[] = await this.prismaService.user.findMany();
+    const users: PrismaUser[] = await this.prisma.user.findMany();
     return users.map((user: PrismaUser) => plainToInstance(User, user));
   }
 
   async findOne(id: string): Promise<User> {
-    const user: PrismaUser = await this.prismaService.user.findUnique({
+    const user: PrismaUser = await this.prisma.user.findUnique({
       where: { id },
     });
 
@@ -51,7 +51,7 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const { oldPassword, newPassword, ...otherData } = updateUserDto;
-    const user: PrismaUser = await this.prismaService.user.findUnique({
+    const user: PrismaUser = await this.prisma.user.findUnique({
       where: { id },
     });
 
@@ -63,7 +63,7 @@ export class UserService {
         code: 'WRONG_PASSWORD',
       });
 
-    const updatedUser: PrismaUser = await this.prismaService.user.update({
+    const updatedUser: PrismaUser = await this.prisma.user.update({
       where: { id },
       data: {
         ...otherData,
@@ -77,7 +77,7 @@ export class UserService {
 
   async delete(id: string): Promise<void> {
     try {
-      await this.prismaService.user.delete({ where: { id } });
+      await this.prisma.user.delete({ where: { id } });
     } catch {
       throw new NotFoundException(this.NotFound);
     }

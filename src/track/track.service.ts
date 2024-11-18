@@ -17,10 +17,10 @@ export class TrackService {
     code: 'NOT_FOUND',
   };
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createTrackDto: CreateTrackDto): Promise<Track> {
-    const track: PrismaTrack = await this.prismaService.track.create({
+    const track: PrismaTrack = await this.prisma.track.create({
       data: {
         name: createTrackDto.name,
         artistId: createTrackDto.artistId || null,
@@ -33,12 +33,12 @@ export class TrackService {
   }
 
   async findAll(): Promise<Track[]> {
-    const tracks: PrismaTrack[] = await this.prismaService.track.findMany();
+    const tracks: PrismaTrack[] = await this.prisma.track.findMany();
     return tracks.map((track: PrismaTrack) => plainToInstance(Track, track));
   }
 
   async findOne(id: string): Promise<Track> {
-    const track: PrismaTrack = await this.prismaService.track.findUnique({
+    const track: PrismaTrack = await this.prisma.track.findUnique({
       where: { id },
     });
 
@@ -50,12 +50,12 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto): Promise<Track> {
-    const track: PrismaTrack = await this.prismaService.track.findUnique({
+    const track: PrismaTrack = await this.prisma.track.findUnique({
       where: { id },
     });
     if (!track) throw new NotFoundException(this.NotFound);
 
-    const updatedTrack: PrismaTrack = await this.prismaService.track.update({
+    const updatedTrack: PrismaTrack = await this.prisma.track.update({
       where: { id },
       data: updateTrackDto,
     });
@@ -65,7 +65,7 @@ export class TrackService {
 
   async delete(id: string): Promise<void> {
     try {
-      await this.prismaService.track.delete({ where: { id } });
+      await this.prisma.track.delete({ where: { id } });
     } catch {
       throw new NotFoundException(this.NotFound);
     }

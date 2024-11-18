@@ -14,12 +14,12 @@ services:
     environment:
       PORT: ${PORT}
       DATABASE_URL: ${DATABASE_URL}
+    networks:
+      - home-library
     depends_on:
       - postgres-db
     volumes:
       - ./src:/app/src
-    networks:
-      - home-library
 
   postgres-db:
     container_name: postgres-db
@@ -37,10 +37,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     command:
       ['postgres', '-c', 'logging_collector=on', '-c', 'log_statement=all']
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
     networks:
       - home-library
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
 networks:
   home-library:
@@ -48,4 +48,4 @@ networks:
     name: nodejs2024Q3-service-bridge
 
 volumes:
-  postgres-data:
+  pgdata:

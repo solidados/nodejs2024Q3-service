@@ -17,10 +17,10 @@ export class ArtistService {
     code: 'NOT_FOUND',
   };
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createArtistDto: CreateArtistDto): Promise<Artist> {
-    const artist: PrismaArtist = await this.prismaService.artist.create({
+    const artist: PrismaArtist = await this.prisma.artist.create({
       data: {
         name: createArtistDto.name,
         grammy: createArtistDto.grammy,
@@ -31,14 +31,14 @@ export class ArtistService {
   }
 
   async findAll(): Promise<Artist[]> {
-    const artists: PrismaArtist[] = await this.prismaService.artist.findMany();
+    const artists: PrismaArtist[] = await this.prisma.artist.findMany();
     return artists.map((artist: PrismaArtist) =>
       plainToInstance(Artist, artist),
     );
   }
 
   async findOne(id: string): Promise<Artist> {
-    const artist: PrismaArtist = await this.prismaService.artist.findUnique({
+    const artist: PrismaArtist = await this.prisma.artist.findUnique({
       where: { id },
     });
 
@@ -48,13 +48,13 @@ export class ArtistService {
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
-    const artist: PrismaArtist = await this.prismaService.artist.findUnique({
+    const artist: PrismaArtist = await this.prisma.artist.findUnique({
       where: { id },
     });
 
     if (!artist) throw new NotFoundException(this.NotFound);
 
-    const updatedArtist: PrismaArtist = await this.prismaService.artist.update({
+    const updatedArtist: PrismaArtist = await this.prisma.artist.update({
       where: { id },
       data: updateArtistDto,
     });
@@ -64,7 +64,7 @@ export class ArtistService {
 
   async delete(id: string): Promise<void> {
     try {
-      await this.prismaService.artist.delete({ where: { id } });
+      await this.prisma.artist.delete({ where: { id } });
     } catch (error) {
       console.error('Error deleting artist:', error.message);
       throw new NotFoundException(this.NotFound);
