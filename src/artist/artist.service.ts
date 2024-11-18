@@ -8,6 +8,7 @@ import { UpdateArtistDto } from './dto/updateArtist.dto';
 
 import { Artist as PrismaArtist } from '@prisma/client';
 import { Artist } from './entities/artist.entity';
+import { Album as PrismaAlbum } from '.prisma/client';
 
 @Injectable()
 export class ArtistService {
@@ -63,11 +64,12 @@ export class ArtistService {
   }
 
   async delete(id: string): Promise<void> {
-    try {
-      await this.prisma.artist.delete({ where: { id } });
-    } catch (error) {
-      console.error('Error deleting artist:', error.message);
-      throw new NotFoundException(this.NotFound);
-    }
+    const artist: PrismaArtist = await this.prisma.artist.findUnique({
+      where: { id },
+    });
+
+    if (!artist) throw new NotFoundException(this.NotFound);
+
+    await this.prisma.artist.delete({ where: { id } });
   }
 }

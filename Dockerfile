@@ -1,6 +1,5 @@
-# Stage 1
-FROM node:18-alpine
-#FROM node:20.11-alpine3.19 as builder
+# Stage 1: Build
+FROM node:18-alpine as builder
 
 WORKDIR /app
 
@@ -11,18 +10,19 @@ RUN npm ci && npm cache clean --force
 COPY . .
 
 RUN npm run build
-#RUN npm run prisma:init && npm run start
+
+# Stage 2: Final (Production)
+FROM node:18-alpine as runner
+
+WORKDIR /app
+
+COPY --from=builder /app/package.json /app/package-lock.json /app/
+
+RUN npm ci --only=production && npm cache clean --force
+
+COPY --from=builder /app/dist /app/dist
 
 EXPOSE 4000
+CMD ["npm", "run", "start"]
 
-CMD ["sh", "-c", "npm run prisma:init && npm run start"]
-
-# Stage 2
-
-#FROM node:20.11-alpine3.19 as runner
-
-#WORKDIR /app
-
-#COPY --from=builder /app .
-
-#CMD [ "npm", "run", "start:home-library" ]
+#CMD ["sh", "-c", "npm run prisma:init && npm run start"]
