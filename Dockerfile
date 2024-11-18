@@ -23,6 +23,4 @@ RUN npm ci --only=production && npm cache clean --force
 COPY --from=builder /app/dist /app/dist
 
 EXPOSE 4000
-CMD ["npm", "run", "start"]
-
-#CMD ["sh", "-c", "npm run prisma:init && npm run start"]
+CMD ["npm", "run", "start:home-library"]
