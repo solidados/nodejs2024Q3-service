@@ -3,10 +3,10 @@ version: '3.8'
 services:
   home-library-app:
     container_name: home-library
-#    image: solidados/homelibrary-app:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: solidados/homelibrary-app:latest
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     ports:
       - ${PORT}:${PORT}
     restart: always
