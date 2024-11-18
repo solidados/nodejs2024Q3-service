@@ -10,10 +10,10 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Album } from './entities/album.entity';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/createAlbum.dto';
 import { UpdateAlbumDto } from './dto/updateAlbum.dto';
+import { Album } from './entities/album.entity';
 
 @Controller('album')
 export class AlbumController {
@@ -21,34 +21,34 @@ export class AlbumController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createAlbumDto: CreateAlbumDto): Album {
+  async create(@Body() createAlbumDto: CreateAlbumDto): Promise<Album> {
     return this.albumService.create(createAlbumDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(): Album[] {
+  async findAll(): Promise<Album[]> {
     return this.albumService.findAll();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id', ParseUUIDPipe) id: string): Album {
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Album> {
     return this.albumService.findOne(id);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
-  ): Album {
+  ): Promise<Album> {
     return this.albumService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param('id', new ParseUUIDPipe()) id: string) {
+  async delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     return this.albumService.delete(id);
   }
 }
