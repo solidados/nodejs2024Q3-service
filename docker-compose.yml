@@ -41,6 +41,9 @@ services:
       - home-library
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - postgres-logs
+      - node_modules
+      - logs-data
 
 networks:
   home-library:
@@ -48,4 +51,4 @@ networks:
     name: nodejs2024Q3-service-bridge
 
 volumes:
-  pgdata:
+  postgres-data:
