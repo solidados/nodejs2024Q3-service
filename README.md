@@ -9,35 +9,44 @@
 ```shell
 git clone https://github.com/solidados/nodejs2024Q3-service.git
 ```
-
 ### Change directory
 ```shell
-cd nodejs2024Q3-service
+cd nodejs2024Q1-service
 ```
-
 ### Switch branch
 ```shell
 git checkout dev
 ```
-
-### Install NPM modules
+### Install NPM dependencies
 ```shell
 npm install
 ```
-
-### Create Environment
+### Create Environment (based on `.env.example`):
 ```shell
 cp .env.example ./.env
 ```
 
 ## Running application
+#### Open new Terminal tab -> Run docker:
 ```shell
-npm run start
+npm run docker
 ```
-
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+#### Open new Terminal tab -> Run tests:
+```shell
+npm run test or npm run docker:test
+```
+#### Vulnerabilities scanning (only after `npm run docker` command) run:
+```shell
+npm run docker:scan
+```
+#### Images size checks:
+```shell
+docker images
+```
+### DockerHub Images 
+- Visit [DockerHub](https://hub.docker.com/repository/docker/solidados/homelibrary-app/tags)
+### OpenAPI Swagger
+- Visit [documentation](http://localhost:4000/doc) while running
 
 ## Testing
 
