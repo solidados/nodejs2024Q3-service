@@ -23,17 +23,17 @@ export class UserController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.create(createUserDto);
+    return await this.userService.create(createUserDto);
   }
 
   @Get()
   async findAll(): Promise<User[]> {
-    return this.userService.findAll();
+    return await this.userService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<User> {
-    return this.userService.findOne(id);
+    return await this.userService.findOne(id);
   }
 
   @Put(':id')
@@ -41,12 +41,12 @@ export class UserController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.userService.update(id, updateUserDto);
+    return await this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
-    return this.userService.delete(id);
+    return await this.userService.delete(id);
   }
 }

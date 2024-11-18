@@ -24,7 +24,7 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const existingUser = await this.prisma.user.findUnique({
+    /*const existingUser = await this.prisma.user.findUnique({
       where: { login: createUserDto.login },
     });
 
@@ -33,20 +33,30 @@ export class UserService {
         message: 'User with this login already exists',
         code: 'LOGIN_TAKEN',
       });
-    }
+    }*/
 
+    const timestamp = new Date();
     const user = await this.prisma.user.create({
       data: {
-        login: createUserDto.login,
-        password: createUserDto.password,
+        // login: createUserDto.login,
+        // password: createUserDto.password,
+        ...createUserDto,
+        createdAt: timestamp,
+        updatedAt: timestamp,
       },
     });
-
-    return plainToInstance(User, user);
+    console.log('CREATE: ', plainToInstance(User, user));
+    // return plainToInstance(User, user);
+    return plainToInstance(User, {
+      ...user,
+      createdAt: user.createdAt.getTime(),
+      updatedAt: user.updatedAt.getTime(),
+    });
   }
 
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany();
+    console.log('ALL USERS: ', users);
     return users.map((user) => plainToInstance(User, user));
   }
 
@@ -56,7 +66,7 @@ export class UserService {
     });
 
     if (!user) throw new NotFoundException(this.NotFound);
-
+    console.log('FIND ONE: ', plainToInstance(User, user));
     return plainToInstance(User, user);
   }
 
@@ -82,7 +92,12 @@ export class UserService {
       },
     });
 
-    return plainToInstance(User, updatedUser);
+    // return plainToInstance(User, updatedUser);
+    return plainToInstance(User, {
+      ...updateUserDto,
+      updatedAt: updatedUser.updatedAt.getTime(),
+      createdAt: updatedUser.createdAt.getTime(),
+    });
   }
 
   async delete(id: string): Promise<void> {
