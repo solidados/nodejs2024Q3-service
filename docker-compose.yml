@@ -43,9 +43,7 @@ services:
       - home-library
     volumes:
       - postgres-data:/var/lib/postgresql/data
-#      - postgres-logs
-#      - node_modules
-#      - logs-data
+      - postgres-logs:/var/log
 
 networks:
   home-library:
