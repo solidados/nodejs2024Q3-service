@@ -45,7 +45,7 @@ export class UserService {
         updatedAt: timestamp,
       },
     });
-    console.log('CREATE: ', plainToInstance(User, user));
+
     // return plainToInstance(User, user);
     return plainToInstance(User, {
       ...user,
@@ -56,7 +56,7 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany();
-    console.log('ALL USERS: ', users);
+
     return users.map((user) => plainToInstance(User, user));
   }
 
@@ -66,7 +66,7 @@ export class UserService {
     });
 
     if (!user) throw new NotFoundException(this.NotFound);
-    console.log('FIND ONE: ', plainToInstance(User, user));
+
     return plainToInstance(User, user);
   }
 
