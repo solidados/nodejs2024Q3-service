@@ -61,10 +61,12 @@ export class AlbumService {
   }
 
   async delete(id: string): Promise<void> {
-    try {
-      await this.prisma.album.delete({ where: { id } });
-    } catch {
-      throw new NotFoundException(this.NotFound);
-    }
+    const album: PrismaAlbum = await this.prisma.album.findUnique({
+      where: { id },
+    });
+
+    if (!album) throw new NotFoundException(this.NotFound);
+
+    await this.prisma.album.delete({ where: { id } });
   }
 }

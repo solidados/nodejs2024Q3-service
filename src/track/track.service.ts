@@ -8,6 +8,7 @@ import { UpdateTrackDto } from './dto/updateTrack.dto';
 
 import { Track } from './entities/track.entity';
 import { Track as PrismaTrack } from '@prisma/client';
+import { Album as PrismaAlbum } from '.prisma/client';
 
 @Injectable()
 export class TrackService {
@@ -64,10 +65,12 @@ export class TrackService {
   }
 
   async delete(id: string): Promise<void> {
-    try {
-      await this.prisma.track.delete({ where: { id } });
-    } catch {
-      throw new NotFoundException(this.NotFound);
-    }
+    const track: PrismaTrack = await this.prisma.track.findUnique({
+      where: { id },
+    });
+
+    if (!track) throw new NotFoundException(this.NotFound);
+
+    await this.prisma.track.delete({ where: { id } });
   }
 }
