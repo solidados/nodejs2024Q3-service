@@ -1,4 +1,3 @@
-/*
 import { v4 as uuidv4 } from 'uuid';
 import { Exclude, Transform } from 'class-transformer';
 
@@ -31,20 +30,19 @@ export class User {
     this.updatedAt = timestamp;
   }
 }
-*/
-import { Exclude } from 'class-transformer';
-
-export class User {
-  id: string;
-  login: string;
-  version: number;
-  createdAt: number;
-  updatedAt: number;
-
-  @Exclude()
-  password: string;
-
-  constructor(partial: Partial<User>) {
-    Object.assign(this, partial);
-  }
-}
+// import { Exclude } from 'class-transformer';
+//
+// export class User {
+//   id: string;
+//   login: string;
+//   version: number;
+//   createdAt: number;
+//   updatedAt: number;
+//
+//   @Exclude()
+//   password: string;
+//
+//   constructor(partial: Partial<User>) {
+//     Object.assign(this, partial);
+//   }
+// }

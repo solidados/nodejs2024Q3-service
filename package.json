@@ -16,7 +16,7 @@
     "start:home-library": "npm run migrate:generate && npm run migrate:deploy && npm run start:dev",
     "docker:start": "docker-compose up --build",
     "docker:stop": "docker-compose down",
-    "docker:scan": "docker scout cves home-library-app && docker scout cves home-library-db",
+    "docker:scan": "docker scout cves solidados/home-library-app:latest && docker scout cves solidados/home-library-db:latest",
     "docker:test": "docker exec home-library npm run test",
     "migrate:dev": "npx prisma migrate dev --name init",
     "migrate:generate": "npx prisma generate",

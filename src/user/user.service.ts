@@ -24,34 +24,26 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    /*const existingUser = await this.prisma.user.findUnique({
-      where: { login: createUserDto.login },
-    });
-
-    if (existingUser) {
-      throw new ForbiddenException({
-        message: 'User with this login already exists',
-        code: 'LOGIN_TAKEN',
+    try {
+      const timestamp = new Date();
+      const user = await this.prisma.user.create({
+        data: {
+          // login: createUserDto.login,
+          // password: createUserDto.password,
+          ...createUserDto,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        },
       });
-    }*/
 
-    const timestamp = new Date();
-    const user = await this.prisma.user.create({
-      data: {
-        // login: createUserDto.login,
-        // password: createUserDto.password,
-        ...createUserDto,
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      },
-    });
-
-    // return plainToInstance(User, user);
-    return plainToInstance(User, {
-      ...user,
-      createdAt: user.createdAt.getTime(),
-      updatedAt: user.updatedAt.getTime(),
-    });
+      return plainToInstance(User, {
+        ...user,
+        createdAt: user.createdAt.getTime(),
+        updatedAt: user.updatedAt.getTime(),
+      });
+    } catch (error) {
+      console.error('ERROR=', error);
+    }
   }
 
   async findAll(): Promise<User[]> {
@@ -94,7 +86,7 @@ export class UserService {
 
     // return plainToInstance(User, updatedUser);
     return plainToInstance(User, {
-      ...updateUserDto,
+      ...updatedUser,
       updatedAt: updatedUser.updatedAt.getTime(),
       createdAt: updatedUser.createdAt.getTime(),
     });

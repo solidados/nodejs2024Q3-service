@@ -3,10 +3,10 @@ version: '3.8'
 services:
   home-library-app:
     container_name: home-library
-    image: solidados/homelibrary-app:latest
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
+#    image: solidados/homelibrary-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - ${PORT}:${PORT}
     restart: always
@@ -25,10 +25,10 @@ services:
 
   postgres-db:
     container_name: postgres-db
-    image: solidados/homelibrary-bd:latest
-#    build:
-#      context: .
-#      dockerfile: Dockerfile.postgres
+#    image: solidados/homelibrary-bd:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     restart: always

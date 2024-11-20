@@ -29,7 +29,7 @@ cp .env.example ./.env
 ## Running application
 #### Open new Terminal tab -> Run docker:
 ```shell
-npm run docker
+npm run docker:start
 ```
 #### Open new Terminal tab -> Run tests:
 ```shell
