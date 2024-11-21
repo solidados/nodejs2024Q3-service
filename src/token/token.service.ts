@@ -1,15 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TokenDto } from './dto/token.dto';
 
 @Injectable()
-export class TokenService {
+export class TokenService implements OnModuleInit {
   jwtSecretKey: string;
   jwtSecretRefreshKey: string;
   tokenExpireTime: string;
   tokenRefreshExpireTime: string;
-
   private readonly logger: Logger = new Logger(TokenService.name);
 
   constructor(
@@ -32,7 +31,9 @@ export class TokenService {
       'TOKEN_REFRESH_EXPIRE_TIME',
       '24h',
     );
+  }
 
+  onModuleInit(): void {
     if (!this.jwtSecretKey) {
       this.logger.error(
         'JWT_SECRET_KEY is not defined in environment variables',
