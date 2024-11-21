@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TokenDto } from './dto/token.dto';
@@ -9,6 +9,8 @@ export class TokenService {
   jwtSecretRefreshKey: string;
   tokenExpireTime: string;
   tokenRefreshExpireTime: string;
+
+  private readonly logger: Logger = new Logger(TokenService.name);
 
   constructor(
     private readonly jwtService: JwtService,
@@ -32,7 +34,9 @@ export class TokenService {
     );
   }
 
-  async getTokens(payload: TokenDto): Promise<string[]> {
+  async getTokens(
+    payload: TokenDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const accessToken: string = await this.jwtService.signAsync(payload, {
       secret: this.jwtSecretKey,
       expiresIn: this.tokenExpireTime,
@@ -42,19 +46,23 @@ export class TokenService {
       expiresIn: this.tokenRefreshExpireTime,
     });
 
-    return [accessToken, refreshToken];
+    return { accessToken, refreshToken };
   }
 
-  async validateAccessToken(token: string): Promise<TokenDto> {
-    const { userId, login } = await this.jwtService.verifyAsync<TokenDto>(
-      token,
-      { secret: this.jwtSecretKey },
-    );
-
-    return { userId, login };
+  async validateAccessToken(token: string): Promise<TokenDto | null> {
+    try {
+      return await this.jwtService.verifyAsync<TokenDto>(token, {
+        secret: this.jwtSecretKey,
+      });
+    } catch (error) {
+      this.logger.error('Invalid access token', error.stack);
+      return null;
+    }
   }
 
-  async validateRefreshToken(token: string) {
+  async validateRefreshToken(
+    token: string,
+  ): Promise<{ accessToken: string; refreshToken: string } | null> {
     try {
       const { userId, login } = await this.jwtService.verifyAsync<TokenDto>(
         token,
@@ -65,7 +73,7 @@ export class TokenService {
       const payload = { userId, login };
       return await this.getTokens(payload);
     } catch (error) {
-      console.error(error.message);
+      this.logger.error(error.message, error.stack);
       return null;
     }
   }
