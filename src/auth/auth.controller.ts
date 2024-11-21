@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -13,6 +14,7 @@ import { User } from '../user/entities/user.entity';
 import { Auth } from './entity/auth.entity';
 import { ValidationTokenPipe } from '../token/token.pipe';
 import { RefreshTokenDto } from './dto/refreshToken.dto';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -34,6 +36,7 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationTokenPipe())
   async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<Auth> {
