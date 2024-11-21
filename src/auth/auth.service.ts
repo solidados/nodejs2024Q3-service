@@ -31,15 +31,27 @@ export class AuthService {
   ) {}
 
   async singUp(authDto: AuthDto): Promise<User> {
+    const isExistLogin: boolean = await this.userService.isExistLogin(
+      authDto.login,
+    );
+
+    if (isExistLogin)
+      throw new ForbiddenException({
+        status: 403,
+        message: 'This login is taken',
+        code: 'IS_EXIST',
+      });
+
     return await this.userService.create(authDto);
   }
 
   async logIn(authDto: AuthDto): Promise<Auth> {
-    const isPasswordValid: boolean = await this.userService.isValidPassword(
+    const isValidUser: boolean = await this.userService.isValidUser(
       authDto.login,
       authDto.password,
     );
-    if (!isPasswordValid) throw new ForbiddenException(this.NotValid);
+
+    if (!isValidUser) throw new ForbiddenException(this.NotValid);
 
     const user = await this.userService.findOneByLogin(authDto.login);
     const { id: userId, login } = user;
