@@ -6,14 +6,15 @@ import {
 
 @Injectable()
 export class ValidationTokenPipe implements PipeTransform {
-  private readonly Unauthorized = {
+  private static readonly UNAUTHORIZED_ERROR = {
     status: 401,
-    message: 'Unauthorized token',
+    message: 'Unauthorized: token is missing or invalid.',
     code: 'UNAUTHORIZED_TOKEN',
   };
 
   public transform(value: string): string {
-    if (!value) throw new UnauthorizedException(this.Unauthorized);
+    if (typeof value !== 'string' || value.trim() === '')
+      throw new UnauthorizedException(ValidationTokenPipe.UNAUTHORIZED_ERROR);
     return value;
   }
 }
