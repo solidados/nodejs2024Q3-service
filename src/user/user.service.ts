@@ -62,6 +62,10 @@ export class UserService {
     return plainToInstance(User, user);
   }
 
+  async findOneByLogin(login: string) {
+    return this.prisma.user.findUnique({ where: { login } });
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { id },
@@ -100,5 +104,10 @@ export class UserService {
     if (!user) throw new NotFoundException(this.NotFound);
 
     await this.prisma.user.delete({ where: { id } });
+  }
+
+  async isValidPassword(login: string, password: string): Promise<boolean> {
+    const user = await this.findOneByLogin(login);
+    return password === user.password;
   }
 }
