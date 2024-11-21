@@ -32,6 +32,19 @@ export class TokenService {
       'TOKEN_REFRESH_EXPIRE_TIME',
       '24h',
     );
+
+    if (!this.jwtSecretKey) {
+      this.logger.error(
+        'JWT_SECRET_KEY is not defined in environment variables',
+      );
+      throw new Error('JWT_SECRET_KEY is required');
+    }
+    if (!this.jwtSecretRefreshKey) {
+      this.logger.error(
+        'JWT_SECRET_REFRESH_KEY is not defined in environment variables',
+      );
+      throw new Error('JWT_SECRET_REFRESH_KEY is required');
+    }
   }
 
   async getTokens(
