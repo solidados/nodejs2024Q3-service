@@ -39,4 +39,10 @@ export class AuthController {
   async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<Auth> {
     return await this.authService.refresh(refreshTokenDto);
   }
+
+  /*@UseGuards(AuthGuard)
+  @Get('me')
+  getProfile(@Request() req) {
+    return req.user;
+  }*/
 }
