@@ -12,6 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 // import { User as PrismaUser } from '@prisma/client';
 import { User } from './entities/user.entity';
+import { HashService } from '../hash/hash.service';
 
 @Injectable()
 export class UserService {
@@ -21,16 +22,26 @@ export class UserService {
     code: 'NOT_FOUND',
   };
 
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly Forbidden = {
+    status: 403,
+    message: 'Wrong password, or passwords not equal',
+    code: 'NOT_EQUAL',
+  };
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly hash: HashService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
-      const timestamp = new Date();
+      const timestamp: Date = new Date();
+      const hashedPassword = await this.hash.getHash(createUserDto.password);
       const user = await this.prisma.user.create({
         data: {
-          // login: createUserDto.login,
-          // password: createUserDto.password,
-          ...createUserDto,
+          login: createUserDto.login,
+          password: hashedPassword,
+          // ...createUserDto,
           createdAt: timestamp,
           updatedAt: timestamp,
         },
@@ -73,17 +84,24 @@ export class UserService {
 
     if (!user) throw new NotFoundException(this.NotFound);
 
-    if (updateUserDto.oldPassword !== user.password) {
-      throw new ForbiddenException({
-        message: 'Wrong password',
-        code: 'WRONG_PASSWORD',
-      });
-    }
+    const isPasswordsEqual: boolean = await this.hash.comparePasswords(
+      updateUserDto.oldPassword,
+      user.password,
+    );
+
+    if (!isPasswordsEqual) throw new ForbiddenException(this.Forbidden);
+
+    const hashedNewPassword: string = await this.hash.getHash(
+      updateUserDto.newPassword,
+    );
+
+    // if (updateUserDto.oldPassword !== user.password)
+    //   throw new ForbiddenException(this.Forbidden);
 
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
-        password: updateUserDto.newPassword,
+        password: hashedNewPassword,
         version: { increment: 1 },
       },
     });
@@ -106,8 +124,25 @@ export class UserService {
     await this.prisma.user.delete({ where: { id } });
   }
 
+  async isExistLogin(login: string): Promise<boolean> {
+    return Boolean(await this.findOneByLogin(login));
+  }
+
   async isValidPassword(login: string, password: string): Promise<boolean> {
     const user = await this.findOneByLogin(login);
     return password === user.password;
+  }
+
+  async isValidUser(login: string, password: string): Promise<boolean | null> {
+    const user = await this.findOneByLogin(login);
+    const isValidPassword: boolean = await this.hash.comparePasswords(
+      password,
+      user.password,
+    );
+
+    if (!user) return null;
+    if (!isValidPassword) return null;
+
+    return isValidPassword;
   }
 }
