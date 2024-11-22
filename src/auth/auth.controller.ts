@@ -7,45 +7,49 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+
 import { AuthService } from './auth.service';
-import { Public } from './auth.public.decorator';
-import { AuthDto } from './dto/auth.dto';
-import { User } from '../user/entities/user.entity';
+import { AuthGuard, Public } from './auth.guard';
 import { Auth } from './entity/auth.entity';
+import { AuthDto } from './dto/auth.dto';
+
+import { User } from '../user/entities/user.entity';
+
 import { ValidationTokenPipe } from '../token/token.pipe';
 import { RefreshTokenDto } from './dto/refreshToken.dto';
-import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
   @Post('signup')
+  @Public()
   @HttpCode(HttpStatus.CREATED)
-  async signUp(@Body() authDto: AuthDto): Promise<User> {
+  async signup(@Body() authDto: AuthDto): Promise<User> {
     return await this.authService.singUp(authDto);
   }
 
-  @Public()
   @Post('login')
+  @Public()
   @HttpCode(HttpStatus.CREATED)
-  async logIn(@Body() authDto: AuthDto): Promise<Auth> {
+  async login(@Body() authDto: AuthDto): Promise<Auth> {
     return await this.authService.logIn(authDto);
   }
 
-  @Public()
   @Post('refresh')
+  @Public()
   @UseGuards(AuthGuard)
-  @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationTokenPipe())
+  @HttpCode(HttpStatus.OK)
   async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<Auth> {
     return await this.authService.refresh(refreshTokenDto);
   }
 
   /*@UseGuards(AuthGuard)
   @Get('me')
-  getProfile(@Request() req) {
-    return req.user;
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  async getProfile(@Request() req) {
+    return await req.user;
   }*/
 }

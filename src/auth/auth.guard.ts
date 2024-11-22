@@ -3,13 +3,17 @@ import {
   ExecutionContext,
   Injectable,
   Logger,
+  SetMetadata,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { TokenService } from '../token/token.service';
-import { IS_PUBLIC_ROUTE_KEY } from './auth.public.decorator';
+
 import { Request } from 'express';
 import { TokenDto } from '../token/dto/token.dto';
+
+export const IS_PUBLIC_ROUTE_KEY = 'isPublic';
+export const Public = () => SetMetadata(IS_PUBLIC_ROUTE_KEY, true);
 
 @Injectable()
 export class AuthGuard implements CanActivate {
