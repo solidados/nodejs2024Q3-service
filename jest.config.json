@@ -5,8 +5,5 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-  "testMatch": ["<rootDir>/*.spec.ts"],
-  "noStackTrace": true,
-  "maxWorkers": 1,
   "verbose": true
 }

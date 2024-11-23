@@ -27,6 +27,9 @@ cp .env.example ./.env
 ```
 
 ## Running application
+> **Warning!**
+> Before running script ``_docker:start_``, please clear the data in Docker Desktop containers
+
 #### Open new Terminal tab -> Run docker:
 ```shell
 npm run docker:start
@@ -52,31 +55,32 @@ docker images
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
+To run all tests with authorization:
 
-```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
+```shell
 npm run test:auth
 ```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
+```shell
+npm run test:refresh
 ```
 
-### Auto-fix and format
+
+## Application Logs
+
+### Check log files
+```
+docker exec -it home-library ls -ls logs
+```
+
+### Check Log file content
+```
+# example: docker exec -it home-library cat ./logs/logs_1.log
+```
+```
+docker exec -it home-library cat <log_filename>
+```
+
+## Auto-fix and format
 
 ```
 npm run lint
