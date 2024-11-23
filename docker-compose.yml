@@ -3,7 +3,7 @@ version: '3.8'
 services:
   home-library-app:
     container_name: home-library
-#    image: solidados/homelibrary-app:latest
+    image: solidados/home-library-app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,11 +21,11 @@ services:
       - postgres-db
     volumes:
       - ./src:/app/src
-      - app-logs:/var/log
+      - ./logs:/app/logs
 
   postgres-db:
     container_name: postgres-db
-#    image: solidados/homelibrary-bd:latest
+    image: solidados/home-library-db:latest
     build:
       context: .
       dockerfile: Dockerfile.postgres
@@ -54,4 +54,3 @@ networks:
 volumes:
   postgres-data:
   postgres-logs:
-  app-logs:

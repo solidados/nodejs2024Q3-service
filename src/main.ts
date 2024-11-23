@@ -1,14 +1,17 @@
-import { dirname, resolve } from 'node:path';
+import * as process from 'node:process';
+import { dirname, join, resolve } from 'node:path';
 import { readFile } from 'node:fs/promises';
 
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
 import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+
 import { load } from 'js-yaml';
 
 import { AppModule } from './app.module';
+import { LoggerService } from './logger/logger.service';
+import { HttpExceptionFilter } from './filters/exception.filter';
 
 async function loadSwaggerDocument(
   filePath: string,
@@ -23,16 +26,47 @@ async function loadSwaggerDocument(
 }
 
 async function bootstrap(): Promise<void> {
-  const app: INestApplication = await NestFactory.create(AppModule);
+  const app: INestApplication = await NestFactory.create(AppModule, {
+    logger: new LoggerService(),
+  });
   const configService = app.get(ConfigService);
-  const port: number = configService.get<number>('PORT', 4001);
+  const port: number = configService.get<number>('PORT', 4000);
+
+  const logger: LoggerService = app.get(LoggerService);
+  const httpAdapterHost = app.get(HttpAdapterHost);
 
   const swaggerPath: string = resolve(dirname(__dirname), 'doc', 'api.yaml');
   const swaggerDocument: OpenAPIObject = await loadSwaggerDocument(swaggerPath);
 
   if (swaggerDocument) SwaggerModule.setup('doc', app, swaggerDocument);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+  app.useLogger(logger);
+  app.useGlobalFilters(new HttpExceptionFilter(httpAdapterHost));
+
+  const api: string = await readFile(
+    join(dirname(__dirname), 'doc', 'api.yaml'),
+    'utf-8',
+  );
+  const document = load(api) as OpenAPIObject;
+  SwaggerModule.setup('doc', app, document);
+
+  process.on('uncaughtException', (error: Error): void => {
+    logger.error('Uncaught Exception', error.stack);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason): void => {
+    logger.error(
+      'Unhandled Rejection',
+      reason instanceof Error ? reason.stack : String(reason),
+    );
+  });
 
   await app.listen(port, () =>
     console.log(
