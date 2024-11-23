@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
@@ -10,7 +11,6 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 
 import { PrismaService } from '../prisma/prisma.service';
 
-// import { User as PrismaUser } from '@prisma/client';
 import { User } from './entities/user.entity';
 import { HashService } from '../hash/hash.service';
 
@@ -34,32 +34,32 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      const timestamp: Date = new Date();
-      const hashedPassword = await this.hash.getHash(createUserDto.password);
-      const user = await this.prisma.user.create({
-        data: {
-          login: createUserDto.login,
-          password: hashedPassword,
-          // ...createUserDto,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-        },
-      });
+    const existingUser = await this.prisma.user.findUnique({
+      where: { login: createUserDto.login },
+    });
 
-      return plainToInstance(User, {
-        ...user,
-        createdAt: user.createdAt.getTime(),
-        updatedAt: user.updatedAt.getTime(),
+    if (existingUser) {
+      throw new ConflictException({
+        status: 409,
+        message: 'User with this login already exists',
+        code: 'CONFLICT',
       });
-    } catch (error) {
-      console.error('ERROR=', error);
     }
+
+    const hashedPassword = await this.hash.getHash(createUserDto.password);
+
+    const user = await this.prisma.user.create({
+      data: {
+        login: createUserDto.login,
+        password: hashedPassword,
+      },
+    });
+
+    return plainToInstance(User, user);
   }
 
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany();
-
     return users.map((user) => plainToInstance(User, user));
   }
 
@@ -74,7 +74,7 @@ export class UserService {
   }
 
   async findOneByLogin(login: string) {
-    return this.prisma.user.findUnique({ where: { login } });
+    return await this.prisma.user.findUnique({ where: { login } });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -95,9 +95,6 @@ export class UserService {
       updateUserDto.newPassword,
     );
 
-    // if (updateUserDto.oldPassword !== user.password)
-    //   throw new ForbiddenException(this.Forbidden);
-
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
@@ -106,12 +103,7 @@ export class UserService {
       },
     });
 
-    // return plainToInstance(User, updatedUser);
-    return plainToInstance(User, {
-      ...updatedUser,
-      updatedAt: updatedUser.updatedAt.getTime(),
-      createdAt: updatedUser.createdAt.getTime(),
-    });
+    return plainToInstance(User, updatedUser);
   }
 
   async delete(id: string): Promise<void> {
@@ -125,22 +117,19 @@ export class UserService {
   }
 
   async isExistLogin(login: string): Promise<boolean> {
-    return Boolean(await this.findOneByLogin(login));
-  }
-
-  async isValidPassword(login: string, password: string): Promise<boolean> {
-    const user = await this.findOneByLogin(login);
-    return password === user.password;
+    return !!(await this.findOneByLogin(login));
   }
 
   async isValidUser(login: string, password: string): Promise<boolean | null> {
     const user = await this.findOneByLogin(login);
+
+    if (!user) return null;
+
     const isValidPassword: boolean = await this.hash.comparePasswords(
       password,
       user.password,
     );
 
-    if (!user) return null;
     if (!isValidPassword) return null;
 
     return isValidPassword;
