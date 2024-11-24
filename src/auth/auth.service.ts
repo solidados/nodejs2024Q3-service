@@ -13,9 +13,9 @@ import { RefreshTokenDto } from './dto/refreshToken.dto';
 
 @Injectable()
 export class AuthService {
-  private readonly UnAuthorized = {
+  private readonly Unauthorized = {
     status: 401,
-    message: 'Refresh token is missing',
+    message: 'Refresh token is missing or invalid',
     code: 'UNAUTHORIZED',
   };
 
@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   async logIn(authDto: AuthDto): Promise<Auth> {
-    const isValidUser: boolean = await this.userService.isValidUser(
+    const isValidUser = await this.userService.isValidUser(
       authDto.login,
       authDto.password,
     );
@@ -65,7 +65,7 @@ export class AuthService {
 
   async refresh(refreshTokenDto: RefreshTokenDto): Promise<Auth> {
     if (!refreshTokenDto.refreshToken)
-      throw new UnauthorizedException(this.UnAuthorized);
+      throw new UnauthorizedException(this.Unauthorized);
 
     try {
       const { accessToken, refreshToken } =
@@ -75,7 +75,8 @@ export class AuthService {
 
       return plainToInstance(Auth, { accessToken, refreshToken });
     } catch (error) {
-      console.error(error.message);
+      console.error('Error during refresh token validation:', error);
+      throw new UnauthorizedException(this.Unauthorized);
     }
   }
 }

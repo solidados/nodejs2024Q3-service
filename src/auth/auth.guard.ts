@@ -7,10 +7,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { TokenService } from '../token/token.service';
-
 import { Request } from 'express';
+
 import { TokenDto } from '../token/dto/token.dto';
+import { TokenService } from '../token/token.service';
 
 export const IS_PUBLIC_ROUTE_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_ROUTE_KEY, true);
@@ -62,7 +62,7 @@ export class AuthGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromHeaders(request: Request): string {
+  private extractTokenFromHeaders(request: Request): string | undefined {
     const authorization = request.headers.authorization;
 
     if (!authorization) throw new UnauthorizedException(this.Unauthorized);
