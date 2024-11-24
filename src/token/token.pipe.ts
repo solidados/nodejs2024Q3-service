@@ -3,6 +3,7 @@ import {
   PipeTransform,
   UnauthorizedException,
 } from '@nestjs/common';
+import { RefreshTokenDto } from '../auth/dto/refreshToken.dto';
 
 @Injectable()
 export class ValidationTokenPipe implements PipeTransform {
@@ -12,8 +13,12 @@ export class ValidationTokenPipe implements PipeTransform {
     code: 'UNAUTHORIZED_TOKEN',
   };
 
-  public transform(value: string): string {
-    if (typeof value !== 'string' || value.trim() === '')
+  public transform(value: RefreshTokenDto): RefreshTokenDto {
+    if (
+      !value ||
+      typeof value.refreshToken !== 'string' ||
+      value.refreshToken.trim() === ''
+    )
       throw new UnauthorizedException(ValidationTokenPipe.UNAUTHORIZED_ERROR);
     return value;
   }

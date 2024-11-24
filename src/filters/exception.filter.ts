@@ -37,7 +37,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const errorMessage: string = `${request.method} - StatusCode: ${status} - Message: ${message}`;
     this.logger.error(errorMessage, (exception as HttpException).stack);
 
-    const responseBody = { status, path, message, timestamp };
+    const responseBody = { statusCode: status, path, message, timestamp };
     httpAdapter.reply(response, responseBody, status);
   }
 }
