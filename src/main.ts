@@ -1,8 +1,79 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import * as process from 'node:process';
+import { dirname, join, resolve } from 'node:path';
+import { readFile } from 'node:fs/promises';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(4000);
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+
+import { load } from 'js-yaml';
+
+import { AppModule } from './app.module';
+import { LoggerService } from './logger/logger.service';
+import { HttpExceptionFilter } from './filters/exception.filter';
+
+async function loadSwaggerDocument(
+  filePath: string,
+): Promise<OpenAPIObject | null> {
+  try {
+    const fileContent: string = await readFile(filePath, 'utf-8');
+    return load(fileContent, { json: true }) as OpenAPIObject;
+  } catch (error) {
+    console.error(`Failed to load Swagger document: ${error.message}`);
+    return null;
+  }
 }
-bootstrap();
+
+async function bootstrap(): Promise<void> {
+  const app: INestApplication = await NestFactory.create(AppModule, {
+    logger: new LoggerService(),
+  });
+  const configService = app.get(ConfigService);
+  const port: number = configService.get<number>('PORT', 4000);
+
+  const logger: LoggerService = app.get(LoggerService);
+  const httpAdapterHost = app.get(HttpAdapterHost);
+
+  const swaggerPath: string = resolve(dirname(__dirname), 'doc', 'api.yaml');
+  const swaggerDocument: OpenAPIObject = await loadSwaggerDocument(swaggerPath);
+
+  if (swaggerDocument) SwaggerModule.setup('doc', app, swaggerDocument);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+  app.useLogger(logger);
+  app.useGlobalFilters(new HttpExceptionFilter(httpAdapterHost));
+
+  const api: string = await readFile(
+    join(dirname(__dirname), 'doc', 'api.yaml'),
+    'utf-8',
+  );
+  const document = load(api) as OpenAPIObject;
+  SwaggerModule.setup('doc', app, document);
+
+  process.on('uncaughtException', (error: Error): void => {
+    logger.error('Uncaught Exception', error.stack);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason): void => {
+    logger.error(
+      'Unhandled Rejection',
+      reason instanceof Error ? reason.stack : String(reason),
+    );
+  });
+
+  await app.listen(port, () =>
+    console.log(
+      `\n> \x1b[96mServer is running on PORT: \x1b[7m ${port} \x1b[27m\x1b[0m`,
+      `\n> \x1b[35mFor OpenAPI docs, visit:\x1b[0m http://localhost:${port}/doc`,
+    ),
+  );
+}
+bootstrap().catch((err) => console.error(err.message));

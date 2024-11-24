@@ -2,10 +2,10 @@ openapi: 3.0.0
 info:
   title: Home Library Service
   description: Home music library service
-  version: 1.0.0
+  version: 1.0.1
 
-servers:
-  - url: /api
+#servers:
+#  - url: /api
 
 components:
   schemas:
@@ -21,10 +21,10 @@ components:
         version:
           type: number
           example: 1
-        createAt:
+        createdAt:
           type: number
           example: 1655000000
-        updateAt:
+        updatedAt:
           type: number
           example: 1655000000
       required:
@@ -117,48 +117,11 @@ security:
   - bearerAuth: []
 
 paths:
-  /login:
-    post:
-      tags:
-        - Login
-      security: []
-      summary: Login
-      description: Logins a user and returns a JWT-token
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              title: example
-              properties:
-                login:
-                  type: string
-                  description: Username
-                password:
-                  type: string
-                  description: Password
-              required:
-                - user
-                - login
-      responses:
-        200:
-          description: Successful login.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                description: JWT Token
-        403:
-          description: Incorrect login or password
-  /signup:
+  /auth/signup:
     post:
       tags:
         - Signup
-      security: [ ]
+      security: []
       summary: Signup
       description: Signup a user
       requestBody:
@@ -183,16 +146,96 @@ paths:
                 - login
                 - password
       responses:
-        204:
-          description: Successful signup
+        201:
+          description: User created.
         400:
-          description: Bad request
-        409:
-          description: Conflict. Login already exists
-  /users:
+          description: No login or password, or they are not a strings.
+  /auth/login:
+    post:
+      tags:
+        - Login
+      security: []
+      summary: Login
+      description: Logins a user and returns a JWT-token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                login:
+                  type: string
+                  description: Username
+                password:
+                  type: string
+                  description: Password
+              required:
+                - login
+                - password
+      responses:
+        200:
+          description: Successful login.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT Token
+                  refreshToken:
+                    type: string
+                    description: JWT Token
+        400:
+          description: No login or password, or they are not a strings.
+        403:
+          description: Wrong password or login.
+  /auth/refresh:
+    post:
+      tags:
+        - Refresh
+      security: []
+      summary: Refresh
+      description: Refresh JWT-tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                refreshToken:
+                  type: string
+                  minLength: 3
+                  maxLength: 255
+                  description: Refresh token
+              required:
+                - refreshToken
+      responses:
+        200:
+          description: Successful refresh
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT Refresh Token
+                  refreshToken:
+                    type: string
+                    description: JWT Refresh Token
+        401:
+          description: No refresh token.
+        403:
+          description: Refresh token is invalid or expired.
+  /user:
     get:
       tags:
-        - Users
+        - User
       summary: Get all users
       description: Gets all users
       responses:
@@ -208,7 +251,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
-        - Users
+        - User
       summary: Create user
       description: Creates a new user
       requestBody:
@@ -239,7 +282,7 @@ paths:
           description: Bad request. body does not contain required fields
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /users/{userId}:
+  /user/{userId}:
     parameters:
       - name: userId
         in: path
@@ -248,7 +291,7 @@ paths:
           type: string
     get:
       tags:
-        - Users
+        - User
       summary: Get single user by id
       description: Get single user by id
       responses:
@@ -267,7 +310,7 @@ paths:
 
     put:
       tags:
-        - Users
+        - User
       summary: Update a user's password
       description: Updates a user's password by ID
       requestBody:
@@ -305,10 +348,10 @@ paths:
                   version:
                     type: integer
                     example: 2
-                  createAt:
+                  createdAt:
                     type: integer
                     example: 1655000000
-                  updateAt:
+                  updatedAt:
                     type: integer
                     example: 1655999999
         400:
@@ -322,7 +365,7 @@ paths:
 
     delete:
       tags:
-        - Users
+        - User
       summary: Delete user
       description: Deletes user by ID.
       responses:
@@ -334,7 +377,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           description: User not found
-  /tracks:
+  /track:
     get:
       tags:
         - Track
@@ -388,7 +431,7 @@ paths:
           description: Bad request. body does not contain required fields
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /tracks/{id}:
+  /track/{id}:
     parameters:
       - name: id
         in: path
@@ -492,7 +535,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           description: Track was not found.
-  /albums:
+  /album:
     get:
       tags:
         - Album
@@ -544,7 +587,7 @@ paths:
           description: Bad request. body does not contain required fields
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /albums/{id}:
+  /album/{id}:
     parameters:
       - name: id
         in: path
@@ -621,7 +664,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           description: Album was not found.
-  /artists:
+  /artist:
     get:
       tags:
         - Artist
@@ -668,7 +711,7 @@ paths:
           description: Bad request. body does not contain required fields
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /artists/{id}:
+  /artist/{id}:
     parameters:
       - name: id
         in: path
@@ -745,7 +788,7 @@ paths:
       tags:
         - Favorites
       summary: Get all favorites
-      description: Gets all favorites movies, tracks and books
+      description: Gets all favorites artists, albums and tracks
       responses:
         200:
           description: Successful operation
