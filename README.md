@@ -27,8 +27,11 @@ cp .env.example ./.env
 ```
 
 ## Running application
-> **Warning!**
-> Before running script ``_docker:start_``, please clear the data in Docker Desktop containers
+> **Warnings**
+> 1. Before running script ``_docker:start_``, please clear the data in **your Docker Desktop** containers
+> 2. Make sure, that your `PostgreSQL` is started
+> MacOS: `brew services list`
+> WinOS: `tasklist | findstr postgres`
 
 #### Open new Terminal tab -> Run docker:
 ```shell
@@ -36,7 +39,7 @@ npm run docker:start
 ```
 #### Open new Terminal tab -> Run tests:
 ```shell
-npm run test or npm run docker:test
+npm run test
 ```
 #### Vulnerabilities scanning (only after `npm run docker` command) run:
 ```shell
@@ -47,9 +50,17 @@ npm run docker:scan
 docker images
 ```
 ### DockerHub Images 
-- Visit [DockerHub](https://hub.docker.com/repository/docker/solidados/homelibrary-app/tags)
+- Visit My DockerHub repo to see images and their sizes: 
+  - [Application](https://hub.docker.com/repository/docker/solidados/home-library-app/tags)
+  - [Database](https://hub.docker.com/repository/docker/solidados/home-library-db/tags)
 ### OpenAPI Swagger
-- Visit [documentation](http://localhost:4000/doc) while running
+- Visit [documentation](http://localhost:4000/doc) while Docker container is running
+> IMPORTANT STEPS!
+> 1. Signup
+> 2. Login
+> 3. Refresh (up to you) - paste to the body `refreshToken` from previous **step-2**
+> 4. Copy `accessToken` from **step-2**, press `Authorize` button on top, paste token and authorize.
+> 5. After that you can perform all CRUD operations in **User** | **Track** | **Album** | **Artist** | **Favorite** sections
 
 ## Testing
 
@@ -63,7 +74,6 @@ npm run test:auth
 ```shell
 npm run test:refresh
 ```
-
 
 ## Application Logs
 
