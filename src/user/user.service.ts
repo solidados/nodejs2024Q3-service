@@ -120,7 +120,7 @@ export class UserService {
     return !!(await this.findOneByLogin(login));
   }
 
-  async isValidUser(login: string, password: string): Promise<boolean | null> {
+  async isValidUser(login: string, password: string): Promise<User | null> {
     const user = await this.findOneByLogin(login);
 
     if (!user) return null;
@@ -132,6 +132,7 @@ export class UserService {
 
     if (!isValidPassword) return null;
 
-    return isValidPassword;
+    // return isValidPassword;
+    return plainToInstance(User, user);
   }
 }
